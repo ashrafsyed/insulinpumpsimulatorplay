@@ -1,0 +1,104 @@
+@(message: String)
+
+@main("Insulin Pump Simulator") {
+    <div class="row">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="form-signin-heading" align="center">Welcome to Insulin Pump Simulator</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <img src="@routes.Assets.at("images/doctor.png")" alt="Doctor" class="img-responsive" style="width:30%">
+                <p>Doctor</p>
+                <p><a href="@routes.Application.userInterface("doctor")" class="btn btn-primary">Doctor Interface</a></p>
+            </div>
+            <div class="col-md-3">
+                <img src="@routes.Assets.at("images/patient.png")" alt="Patient" class="img-responsive" style="width:30%">
+                <p>Patient</p>
+                <p><a href="@routes.Application.userInterface("patient")" class="btn btn-primary">Patient Interface</a></p>
+            </div>
+            <div class="col-md-3">
+                <img src="@routes.Assets.at("images/nurse.png")" alt="Nurse" class="img-responsive" style="width:30%">
+                <p>Nurse</p>
+                <p><a href="@routes.Application.userInterface("nurse")" class="btn btn-primary">Nurse Interface</a></p>
+            </div>
+            <div class="col-md-3">
+                <img src="@routes.Assets.at("images/admin.png")" alt="Nurse" class="img-responsive" style="width:30%">
+                <p>Admin</p>
+                <p><a href="@routes.Application.userInterface("admin")" class="btn btn-primary">Admin Interface</a></p>
+            </div>
+        </div>
+    </div>
+    </div>
+
+}{
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/sweetalert.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/font-awesome.min.css")">
+}{
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/sweetalert.min.js")"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#adminlogin").click(function(e) {
+                e.preventDefault();
+                swal({
+                    title: "Are you the Admin?",
+                    text: "Please enter the PIN",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    inputPlaceholder: "5 digit PIN"
+                }, function (inputValue) {
+                    if (inputValue === false) return false;
+                    if (inputValue === "") {
+                        swal.showInputError("Incorrect PIN");
+                        return false
+                    }
+                    var url = "/interface/"+"admin";
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        data: {"adminpin" : inputValue},
+                        success: function(result) {
+                            window.location.href = "@routes.AdminInterface.index()";
+//                            swal("Nice!", "Howdy? Admin", "success");
+                        },
+                        error: function(result) {
+                            swal.showInputError("Incorrect PIN");
+                        }
+                    });
+
+                });
+            });
+
+            $(".interface").click(function(e) {
+                e.preventDefault();
+               var interface = "";
+               var selectedInterface = $(this).data("interface");
+               if (selectedInterface == "nurse"){
+                   console.log("I am a nurse!!!");
+                   interface="nurse";
+               }else if (selectedInterface == "doctor"){
+                   console.log("I am a doctor");
+                   interface="doctor";
+                } else {
+                   console.log("I am a patient");
+                   interface="patient";
+                }
+               var url = "/interface/"+interface;
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: {"interface" : interface},
+                    success: function(result) {
+                        console.log('ok');
+                    },
+                    error: function(result) {
+                        console.log('error');
+                    }
+                });
+            });
+        });
+    </script>
+}

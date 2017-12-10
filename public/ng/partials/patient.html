@@ -1,0 +1,37 @@
+<div class="container-fluid">
+    <div>
+        <div class="row">
+            <div class="col-md-1 col-md-offset-5">
+                <toggle ng-model="powerOptionValue" ng-change="powerSwitch()" on="<i class='fa fa-play'></i> Power On" off="<i class='fa fa-power-off'></i> Power Off" offstyle="btn-danger" onstyle="btn-success"></toggle>
+            </div>
+        </div>
+    </div>
+    <div ng-show="powerOptionValue">
+        <div class="row">
+            <div class="col-md-2">
+                <label class="text-center">Battery</label>
+                <div id="container-battery">Placeholder for chart</div>
+            </div>
+            <div class="col-md-3 col-md-offset-0">
+                <label class="text-center">Insulin</label>
+                <uib-progressbar class="progress-striped active" value="dynamic" type="{{type}}">{{type}} <i ng-show="showWarning"></i></uib-progressbar>
+
+                <label class="text-center">Glucagon</label>
+                <uib-progressbar class="progress-striped active" value="dynamic" type="{{type}}">{{type}} <i ng-show="showWarning"></i></uib-progressbar>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10">
+                <div uib-alert ng-repeat="alert in alerts" style="width: 30%" dismiss-on-timeout="5000" ng-class="'alert-' + (alert.type || 'warning')" close="closeAlert($index)">{{alert.msg}}</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div id="bglchart">Placeholder for chart</div>
+            </div>
+        </div>
+    </div>
+</div>

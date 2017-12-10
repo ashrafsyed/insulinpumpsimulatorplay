@@ -1,0 +1,60 @@
+@(title: String)(content: Html)(extracss: Html = Html(""))(extrajs: Html = Html(""))
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>@title
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta content="" name="description"/>
+        <meta content="" name="author"/>
+
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-theme.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/hospital.png")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/ui-select.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-grid.min.css")">
+
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/sweetalert.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/font-awesome.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/angular-bootstrap-toggle.min.css")">
+
+
+        @extracss
+
+        <script src="@routes.Assets.at("javascripts/jquery-3.2.1.min.js")" type="text/javascript"></script>
+
+
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-route.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-animate.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-cookies.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-loader.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-sanitize.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-aria.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-messages.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-message-format.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-touch.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-bootstrap-toggle.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/ui-bootstrap-tpls-2.5.0.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/angularjslib/angular-resource.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/ui-select.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/sweetalert.min.js")"></script>
+
+
+        <script>
+            window.insulinpumpapp = {
+                assetsPath : "@routes.Assets.at("")",
+            }
+        </script>
+        @extrajs
+    </head>
+    <body>
+        @content
+    </body>
+</html>

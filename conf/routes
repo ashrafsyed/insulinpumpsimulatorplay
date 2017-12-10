@@ -1,0 +1,24 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET             /                                                controllers.Application.index
+GET             /interface/:selectedInterface                    controllers.Application.userInterface(selectedInterface: String)
+GET             /interface/nurse/                                controllers.NurseInterface.index
+GET             /interface/patient/                              controllers.PatientInterface.index
+GET             /interface/doctor/                               controllers.DoctorInterface.index
+GET             /interface/admin/                                controllers.AdminInterface.index
+
+# Admin Interface
+GET             /rest/v1/admininterface/authorize                controllers.AdminInterface.adminAuthorization
+POST            /rest/v1/admininterface/saveconfig               controllers.AdminInterface.saveConfig
+
+# Sensor
+GET            /rest/v1/sensor/currentbgl/:devId/:patId          controllers.SensorController.getCurrentBGL(devId: Long, patId: Long)
+GET            /rest/v1/sensor/currentbgl/:devId/:patId          controllers.SensorController.bglHistory(devId: Long, patId: Long)
+POST           /rest/v1/sensor/recordbgl                         controllers.SensorController.recordBGL
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET             /assets/*file                                    controllers.Assets.at(path="/public", file)
