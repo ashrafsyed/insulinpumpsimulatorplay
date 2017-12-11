@@ -23,20 +23,20 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
-                        <li><button type="button" class="btn btn-primary navbar-btn" ng-click="deviceConfigClicked=true">Configure Device</button></li>
+                    <ul class="nav navbar-nav navbar-">
+                        <button type="button" class="btn btn-primary navbar-btn" ng-click=formDisplay("patientprofile")>Patient's Profile</button>
+                        <button type="button" class="btn btn-primary navbar-btn" ng-click=formDisplay("deviceconfig")>Configure Device</button>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div ng-show="deviceConfigClicked">
+        <div ng-show="formSelected.patientProfile">
             <div class="panel panel-primary">
-                <div class="panel-heading">Device Configuration Form</div>
+                <div class="panel-heading">Patient Profile Form</div>
                 <div class="panel-body">
                     <form novalidate class="form-horizontal" role="form">
-                        <div ng-form="deviceConfigForm">
+                        <div ng-form="patientProfileForm">
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Patient's First Name</label>
@@ -76,6 +76,84 @@
                                         <label for="FEMALE">Female</label>
                                     </div>
                                     <div class="col-md-12">
+                                        <span class="help-block text-danger" ng-show="showErrMsg && patientProfileForm.patientGender.$error.required">Select the Gender</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Patient's Height</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="patientHeight" ng-model="formData.patientHeight" ng-maxlength="250" ng-required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Patient's Weight</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="patientWeight" ng-model="formData.patientWeight" ng-maxlength="250" ng-required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-6" style="margin-left: 45%">
+                                    <button type="submit" class="btn btn-info" ng-click="resetForm(patientProfileForm)"><span class="fa fa-eject" aria-hidden="true"></span> Reset</button>
+                                    <button type="submit" class="btn btn-success" ng-click="saveConfig(patientProfileForm)">Save Configuration</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="formSelected.deviceConfig">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Device Configuration Form</div>
+                <div class="panel-body">
+                    <form novalidate class="form-horizontal" role="form">
+                        <div ng-form="deviceConfigForm">
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Patient's First Name</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="patientFirstName" ng-model="formData.patientFirstName" ng-maxlength="250">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Patient's Last Name</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="patientLastName" ng-model="formData.patientLastName" ng-maxlength="250" ng-required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Patient's Date of Birth</label>
+                                <div class="col-md-4">
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" uib-datepicker-popup ng-model="formData.patientDOB" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Patient Gender</label>
+                                <div class="col-md-8">
+                                    <div class="radio radio-inline">
+                                        <input type="radio" ng-model="formData.patientGender" name="patientGender" value="MALE">
+                                        <label for="MALE">Male</label>
+                                    </div>
+                                    <div class="radio radio-inline">
+                                        <input type="radio" ng-model="formData.patientGender" name="patientGender" value="FEMALE">
+                                        <label for="FEMALE">Female</label>
+                                    </div>
+                                    <div class="col-md-12">
                                         <span class="help-block text-danger" ng-show="showErrMsg && deviceConfigForm.patientGender.$error.required">Select the Gender</span>
                                     </div>
                                 </div>
@@ -96,17 +174,16 @@
                             </div>
 
                             <div class="form-group">
-                                <button type="submit" class="btn btn-info" ng-click="resetForm(deviceConfigForm)"><span class="fa fa-eject" aria-hidden="true"></span> Reset</button>
-                                <button type="submit" class="btn btn-success" ng-click="saveConfig(deviceConfigForm)">Save Configuration</button>
+                                <div class="col-md-offset-6" style="margin-left: 45%">
+                                    <button type="submit" class="btn btn-info" ng-click="resetForm(deviceConfigForm)"><span class="fa fa-eject" aria-hidden="true"></span> Reset</button>
+                                    <button type="submit" class="btn btn-success" ng-click="saveConfig(deviceConfigForm)">Save Configuration</button>
+                                </div>
                             </div>
-
                         </div>
                     </form>
                 </div>
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>

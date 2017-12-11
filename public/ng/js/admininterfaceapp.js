@@ -53,7 +53,10 @@ admininterfaceapp.config(['$routeProvider', function ($routeProvider) {
  */
 admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
     $scope.adminAuthorized = false;
-    $scope.deviceConfigClicked = false;
+    $scope.formSelected = {
+        patientProfile: false,
+        deviceConfig:false
+    }
 
     $scope.powerSwitch = function () {
         console.log($scope.powerOptionValue)
@@ -96,76 +99,86 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
             }
         }
 
-        $scope.formData = {
-            patientFirstName: "",
-            patientLastName: "",
-            patientGender: "",
-            patientHeight: "",
-            patientWeight: "",
-            patientDOB:""
+    $scope.formDisplay = function (formSelected) {
+        if (formSelected === "patientprofile"){
+            $scope.formSelected.deviceConfig = false;
+            $scope.formSelected.patientProfile = true;
+        }else if (formSelected === "deviceconfig") {
+            $scope.formSelected.patientProfile = false;
+            $scope.formSelected.deviceConfig = true;
         }
+    }
 
-        $scope.deviceConfig = angular.copy($scope.originalDeviceConfig);
+    $scope.formData = {
+        patientFirstName: "",
+        patientLastName: "",
+        patientGender: "",
+        patientHeight: "",
+        patientWeight: "",
+        patientDOB:""
+    }
 
-        $scope.resetForm = function (form) {
-            $scope.initForm();
-        }
+    $scope.deviceConfig = angular.copy($scope.originalDeviceConfig);
 
-        $scope.saveConfig = function (form) {
-            $scope.showErrMsg = false;
-            if (form.$valid){
-                var saveConfigUrl = "/rest/v1/admininterface/saveconfig";
-                var data = {
-                    patientFirstName: $scope.formData.patientFirstName,
-                    patientLastName: $scope.formData.patientLastName,
-                    patientGender: $scope.formData.patientGender,
-                    patientHeight: $scope.formData.patientHeight,
-                    patientWeight: $scope.formData.patientWeight,
-                    patientDOB: $scope.formData.patientDOB
-                };
+    $scope.resetForm = function (form) {
+        $scope.initForm();
+    }
 
-                $http.post(saveConfigUrl, JSON.stringify(data)).success(function (result) {
-                    swal({
-                        title: "Saved",
-                        type: "success",
-                        text: "Configurations Saved Successfully!!",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    // document.location.href = '/onsitepush/#/overview?type=campaign';
+    $scope.saveConfig = function (form) {
+        $scope.showErrMsg = false;
+        if (form.$valid){
+            var saveConfigUrl = "/rest/v1/admininterface/saveconfig";
+            var data = {
+                patientFirstName: $scope.formData.patientFirstName,
+                patientLastName: $scope.formData.patientLastName,
+                patientGender: $scope.formData.patientGender,
+                patientHeight: $scope.formData.patientHeight,
+                patientWeight: $scope.formData.patientWeight,
+                patientDOB: $scope.formData.patientDOB
+            };
+
+            $http.post(saveConfigUrl, JSON.stringify(data)).success(function (result) {
+                swal({
+                    title: "Saved",
+                    type: "success",
+                    text: "Configurations Saved Successfully!!",
+                    timer: 1500,
+                    showConfirmButton: false
                 });
-            } else {
-                $scope.showErrMsg = true;
-            }
+                // document.location.href = '/onsitepush/#/overview?type=campaign';
+            });
+        } else {
+            $scope.showErrMsg = true;
         }
+    }
 
-        $scope.clear = function() {
-            $scope.formData.patientDOB = null;
-        };
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            maxDate: new Date(),
-            minDate: new Date(1900,1,1),
-            startingDay: 1
-        };
-        $scope.open2 = function() {
-            $scope.popup2.opened = true;
-        };
-        $scope.setDate = function(year, month, day) {
-            $scope.formData.patientDOB = new Date(year, month, day);
-        };
+    $scope.clear = function() {
+        $scope.formData.patientDOB = null;
+    };
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        maxDate: new Date(),
+        minDate: new Date(1900,1,1),
+        startingDay: 1
+    };
+    $scope.open2 = function() {
+        $scope.popup2.opened = true;
+    };
+    $scope.setDate = function(year, month, day) {
+        $scope.formData.patientDOB = new Date(year, month, day);
+    };
 
-        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
-        $scope.altInputFormats = ['M!/d!/yyyy'];
+    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+    $scope.format = $scope.formats[0];
+    $scope.altInputFormats = ['M!/d!/yyyy'];
 
-        $scope.popup1 = {
-            opened: false
-        };
+    $scope.popup1 = {
+        opened: false
+    };
 
-        $scope.popup2 = {
-            opened: false
-        };
+    $scope.popup2 = {
+        opened: false
+    };
 
 }]);
 
