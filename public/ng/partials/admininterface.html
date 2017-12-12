@@ -71,36 +71,54 @@
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Age</label>
-                                <div class="col-md-4">
-                                    <ui-select ng-model="patientFormData.patientAge">
-                                        <ui-select-match>
-                                            {{$select.selected.ageValue}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="age in patientAgelist | filter: $select.search">
-                                            <span ng-bind-html="age.ageValue"></span>
-                                        </ui-select-choices>
-                                    </ui-select>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="patientAge" ng-model="patientFormData.patientAge" required>
+                                        <span class="input-group-addon">Years</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Height</label>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" name="patientHeight" ng-model="patientFormData.patientHeight" ng-maxlength="250" ng-required>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="patientHeight" ng-model="patientFormData.patientHeight" required>
+                                        <span class="input-group-addon">cms</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Weight</label>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" name="patientWeight" ng-model="patientFormData.patientWeight" ng-maxlength="250" ng-required>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="patientWeight" ng-model="patientFormData.patientWeight" required>
+                                        <span class="input-group-addon">Kgs</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Emergency Contact</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                        <input type="email" class="form-control" name="emergencyContactEmail" placeholder="email id" ng-model="patientFormData.emergencyContactEmail" ng-maxlength="250">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-mobile" aria-hidden="true"></i></span>
+                                        <input type="text" class="form-control" name="emergencyContactMobile" placeholder="mobile number" ng-model="patientFormData.emergencyContactMobile" ng-maxlength="12">
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-md-offset-6" style="margin-left: 45%">
                                     <button type="submit" class="btn btn-info" ng-click="resetForm(patientProfileForm)"><span class="fa fa-eject" aria-hidden="true"></span> Reset</button>
-                                    <button type="submit" class="btn btn-success" ng-click="saveConfig(patientProfileForm)">Save Configuration</button>
+                                    <button type="submit" class="btn btn-success" ng-click="savePatientData(patientProfileForm)">Save/Update</button>
                                 </div>
                             </div>
 

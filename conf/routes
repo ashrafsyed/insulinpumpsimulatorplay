@@ -12,7 +12,7 @@ GET             /interface/admin/                                controllers.Adm
 
 # Admin Interface
 GET             /rest/v1/admininterface/authorize                controllers.AdminInterface.adminAuthorization
-POST            /rest/v1/admininterface/saveconfig               controllers.AdminInterface.saveConfig
+POST            /rest/v1/admininterface/savepatientdata          controllers.AdminInterface.savePatientData
 
 # Sensor
 GET            /rest/v1/sensor/currentbgl/:devId/:patId          controllers.SensorController.getCurrentBGL(devId: Long, patId: Long)

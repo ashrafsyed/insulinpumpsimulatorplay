@@ -58,15 +58,6 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         deviceConfig:false
     }
 
-    $scope.patientAgelist = [
-        {id: 10, ageValue: 10},
-        {id: 11, ageValue: 11},
-        {id: 12, ageValue: 12},
-        {id: 13, ageValue: 13},
-        {id: 14, ageValue: 14},
-    ];
-
-
     $scope.powerSwitch = function () {
         if ($scope.powerOptionValue == true){
             swal({
@@ -74,7 +65,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                 input: 'password',
                 showCancelButton: true,
                 confirmButtonText: 'Submit',
-                inputPlaceholder: 'Enter your password',
+                inputPlaceholder: 'Enter your 5 digit PIN',
                 showLoaderOnConfirm: true,
                 inputAttributes: {
                     'maxlength': 5,
@@ -129,9 +120,11 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         patientFirstName: "",
         patientLastName: "",
         patientGender: "",
-        patientHeight: "",
-        patientWeight: "",
-        patientAge:""
+        patientHeight: 0,
+        patientWeight: 0,
+        patientAge:0,
+        emergencyContactEmail:"",
+        emergencyContactMobile:""
     }
 
     $scope.deviceConfig = angular.copy($scope.originalDeviceConfig);
@@ -140,24 +133,26 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         $scope.initForm();
     }
 
-    $scope.saveConfig = function (form) {
+    $scope.savePatientData = function (form) {
         $scope.showErrMsg = false;
         if (form.$valid){
-            var saveConfigUrl = "/rest/v1/admininterface/saveconfig";
+            var savePatientDataUrl = "/rest/v1/admininterface/savepatientdata";
             var data = {
                 patientFirstName: $scope.patientFormData.patientFirstName,
                 patientLastName: $scope.patientFormData.patientLastName,
                 patientGender: $scope.patientFormData.patientGender,
-                patientHeight: $scope.patientFormData.patientHeight,
-                patientWeight: $scope.patientFormData.patientWeight,
-                patientAge: $scope.patientFormData.patientAge
+                patientHeight: parseInt($scope.patientFormData.patientHeight),
+                patientWeight: parseInt($scope.patientFormData.patientWeight),
+                patientAge: parseInt($scope.patientFormData.patientAge),
+                emailId: $scope.patientFormData.emergencyContactEmail,
+                mobileNumber: $scope.patientFormData.emergencyContactMobile
             };
 
-            $http.post(saveConfigUrl, JSON.stringify(data)).success(function (result) {
+            $http.post(savePatientDataUrl, JSON.stringify(data)).success(function (result) {
                 swal({
                     title: "Saved",
                     type: "success",
-                    text: "Configurations Saved Successfully!!",
+                    text: "Patient Data Saved Successfully!!",
                     timer: 1500,
                     showConfirmButton: false
                 });

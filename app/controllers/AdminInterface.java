@@ -33,17 +33,23 @@ public class AdminInterface extends Controller {
         }
     }
 
-    public Result saveConfig() {
+    public Result savePatientData() {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
-        String adminPin = request().getQueryString("adminpin");
-        if (StringUtils.isNotEmpty(adminPin) && adminPin.equalsIgnoreCase("12345")){
+        String firstName = request().getQueryString("patientFirstName");
+        String lastName = request().getQueryString("patientLastName");
+        String gender = request().getQueryString("patientGender");
+        String emailId = request().getQueryString("emailId");
+        String mobileNumber = request().getQueryString("mobileNumber");
+        String height = (request().getQueryString("patientHeight"));
+        String weight = request().getQueryString("patientWeight");
+        String age = request().getQueryString("patientAge");
+        if (StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(gender)){
+            System.out.println(firstName);
             resMap.put("status", "success");
-            resMap.put("message", "Howdy Admin!!");
             return ok(gson.toJson(resMap)).as("application/json");
         } else {
             resMap.put("status", "error");
-            resMap.put("message", "Incorrect PIN");
             return ok(gson.toJson(resMap)).as("application/json");
         }
     }
