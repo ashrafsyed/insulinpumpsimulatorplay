@@ -67,10 +67,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
     ];
 
 
-
-
     $scope.powerSwitch = function () {
-        console.log($scope.powerOptionValue)
         if ($scope.powerOptionValue == true){
             swal({
                 title: 'Please enter the 5 digit Admin PIN!',
@@ -100,6 +97,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     var url = '/rest/v1/admininterface/authorize?adminpin=' + result.value;
                     $http.get(url).success(function(response) {
                         if (response.status == "success") {
+                            //TODO Fetch data frpm backend if already exists
                             $scope.adminAuthorized = true;
                             swal.close();
                         }
@@ -127,7 +125,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         }
     }
 
-    $scope.formData = {
+    $scope.patientFormData = {
         patientFirstName: "",
         patientLastName: "",
         patientGender: "",
@@ -147,12 +145,12 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         if (form.$valid){
             var saveConfigUrl = "/rest/v1/admininterface/saveconfig";
             var data = {
-                patientFirstName: $scope.formData.patientFirstName,
-                patientLastName: $scope.formData.patientLastName,
-                patientGender: $scope.formData.patientGender,
-                patientHeight: $scope.formData.patientHeight,
-                patientWeight: $scope.formData.patientWeight,
-                patientAge: $scope.formData.patientAge
+                patientFirstName: $scope.patientFormData.patientFirstName,
+                patientLastName: $scope.patientFormData.patientLastName,
+                patientGender: $scope.patientFormData.patientGender,
+                patientHeight: $scope.patientFormData.patientHeight,
+                patientWeight: $scope.patientFormData.patientWeight,
+                patientAge: $scope.patientFormData.patientAge
             };
 
             $http.post(saveConfigUrl, JSON.stringify(data)).success(function (result) {

@@ -23,12 +23,6 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-10">
-                <div uib-alert ng-repeat="alert in alerts" style="width: 30%" dismiss-on-timeout="5000" ng-class="'alert-' + (alert.type || 'warning')" close="closeAlert($index)">{{alert.msg}}</div>
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col-md-6">
                 <div id="bglchart">Placeholder for chart</div>
             </div>

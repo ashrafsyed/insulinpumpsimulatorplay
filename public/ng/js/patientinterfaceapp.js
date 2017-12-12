@@ -52,31 +52,14 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         } else {
             type = 'success';
         }
-
         $scope.showWarning = type === 'danger' || type === 'warning';
-
         $scope.dynamic = value;
         $scope.type = type;
     };
 
     $scope.powerSwitch = function () {
-        console.log($scope.powerOptionValue)
         $scope.random();
     }
-
-    /*Alert Code*/
-    $scope.alerts = [
-        { type: 'danger', msg: 'Insulin Dosage exceeded daily dosage' },
-        { type: 'success', msg: 'Battery Recharged' }
-    ];
-
-    $scope.addAlert = function() {
-        $scope.alerts.push({msg: 'Another alert!'});
-    };
-
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };
 
     /*HighCharts Code for BGL*/
     Highcharts.setOptions({
