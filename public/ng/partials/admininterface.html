@@ -39,28 +39,16 @@
                         <div ng-form="patientProfileForm">
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's First Name</label>
+                                <label class="col-md-4 control-label">First Name</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientFirstName" ng-model="formData.patientFirstName" ng-maxlength="250">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Last Name</label>
+                                <label class="col-md-4 control-label">Last Name</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientLastName" ng-model="formData.patientLastName" ng-maxlength="250" ng-required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Date of Birth</label>
-                                <div class="col-md-4">
-                                    <p class="input-group">
-                                        <input type="text" class="form-control" uib-datepicker-popup ng-model="formData.patientDOB" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-                                        </span>
-                                    </p>
                                 </div>
                             </div>
 
@@ -82,14 +70,28 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Height</label>
+                                <label class="col-md-4 control-label">Age</label>
+                                <div class="col-md-4">
+                                    <ui-select ng-model="formData.patientAge">
+                                        <ui-select-match>
+                                            {{$select.selected.ageValue}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="age in patientAgelist | filter: $select.search">
+                                            <span ng-bind-html="age.ageValue"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Height</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientHeight" ng-model="formData.patientHeight" ng-maxlength="250" ng-required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Weight</label>
+                                <label class="col-md-4 control-label">Weight</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientWeight" ng-model="formData.patientWeight" ng-maxlength="250" ng-required>
                                 </div>
@@ -117,21 +119,21 @@
                         <div ng-form="deviceConfigForm">
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's First Name</label>
+                                <label class="col-md-4 control-label">First Name</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientFirstName" ng-model="formData.patientFirstName" ng-maxlength="250">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Last Name</label>
+                                <label class="col-md-4 control-label">Last Name</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientLastName" ng-model="formData.patientLastName" ng-maxlength="250" ng-required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Date of Birth</label>
+                                <label class="col-md-4 control-label">Date of Birth</label>
                                 <div class="col-md-4">
                                     <p class="input-group">
                                         <input type="text" class="form-control" uib-datepicker-popup ng-model="formData.patientDOB" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
@@ -160,14 +162,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Height</label>
+                                <label class="col-md-4 control-label">Height</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientHeight" ng-model="formData.patientHeight" ng-maxlength="250" ng-required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient's Weight</label>
+                                <label class="col-md-4 control-label">Weight</label>
                                 <div class="col-md-4">
                                     <input type="text" class="form-control" name="patientWeight" ng-model="formData.patientWeight" ng-maxlength="250" ng-required>
                                 </div>

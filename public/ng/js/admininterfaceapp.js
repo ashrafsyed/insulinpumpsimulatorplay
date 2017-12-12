@@ -58,43 +58,61 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         deviceConfig:false
     }
 
+    $scope.patientAgelist = [
+        {id: 10, ageValue: 10},
+        {id: 11, ageValue: 11},
+        {id: 12, ageValue: 12},
+        {id: 13, ageValue: 13},
+        {id: 14, ageValue: 14},
+    ];
+
+
+
+
     $scope.powerSwitch = function () {
         console.log($scope.powerOptionValue)
         if ($scope.powerOptionValue == true){
             swal({
-                title: "Are you the Admin?",
-                text: "Please enter the PIN",
-                type: "input",
+                title: 'Please enter the 5 digit Admin PIN!',
+                input: 'password',
                 showCancelButton: true,
-                closeOnConfirm: false,
-                inputPlaceholder: "5 digit PIN"
-            }, function (inputValue) {
-                if (inputValue === false) {
-                    $scope.powerOptionValue = false;
-                    swal.close();
-                    return false;
-                }
-                if (inputValue === "") {
-                    swal.showInputError("Incorrect PIN");
-                    return false
-                }
-
-                var url = '/rest/v1/admininterface/authorize?adminpin=' + inputValue;
-                $http.get(url).success(function(result) {
-                        if (result.status == "success") {
+                confirmButtonText: 'Submit',
+                inputPlaceholder: 'Enter your password',
+                showLoaderOnConfirm: true,
+                inputAttributes: {
+                    'maxlength': 5,
+                    'autocapitalize': 'off',
+                    'autocorrect': 'off'
+                },
+                preConfirm: (password) => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            if (password === '') {
+                                swal.showValidationError('Incorrect PIN!!');
+                            }
+                            resolve()
+                        }, 2000)
+                    })
+                },
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.value) {
+                    var url = '/rest/v1/admininterface/authorize?adminpin=' + result.value;
+                    $http.get(url).success(function(response) {
+                        if (response.status == "success") {
                             $scope.adminAuthorized = true;
                             swal.close();
                         }
-                        if (result.status == "error") {
-                            swal.showInputError(result.message);
+                        if (response.status == "error") {
+                            swal.showValidationError(response.message);
                         }
                     })
-                    .error(function(result){
-                        swal.showInputError("Incorrect PIN");
-                    });
-
-                });
-            } else {
+                    .error(function(response){
+                        swal.showValidationError("Incorrect PIN");
+                    })
+                }
+            })
+        } else {
                 $scope.adminAuthorized = false;
             }
         }
@@ -115,7 +133,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         patientGender: "",
         patientHeight: "",
         patientWeight: "",
-        patientDOB:""
+        patientAge:""
     }
 
     $scope.deviceConfig = angular.copy($scope.originalDeviceConfig);
@@ -134,7 +152,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                 patientGender: $scope.formData.patientGender,
                 patientHeight: $scope.formData.patientHeight,
                 patientWeight: $scope.formData.patientWeight,
-                patientDOB: $scope.formData.patientDOB
+                patientAge: $scope.formData.patientAge
             };
 
             $http.post(saveConfigUrl, JSON.stringify(data)).success(function (result) {
@@ -152,33 +170,6 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         }
     }
 
-    $scope.clear = function() {
-        $scope.formData.patientDOB = null;
-    };
-    $scope.dateOptions = {
-        formatYear: 'yy',
-        maxDate: new Date(),
-        minDate: new Date(1900,1,1),
-        startingDay: 1
-    };
-    $scope.open2 = function() {
-        $scope.popup2.opened = true;
-    };
-    $scope.setDate = function(year, month, day) {
-        $scope.formData.patientDOB = new Date(year, month, day);
-    };
-
-    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-    $scope.format = $scope.formats[0];
-    $scope.altInputFormats = ['M!/d!/yyyy'];
-
-    $scope.popup1 = {
-        opened: false
-    };
-
-    $scope.popup2 = {
-        opened: false
-    };
 
 }]);
 
