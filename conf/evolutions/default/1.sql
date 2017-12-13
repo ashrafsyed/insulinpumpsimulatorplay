@@ -14,30 +14,32 @@ create table battery (
 
 create table device_config (
   id                            bigserial not null,
-  patient_first_name            varchar(255),
-  patient_last_name             varchar(255),
-  patient_gender                varchar(255),
-  patient_dob                   date,
-  patient_weight                integer,
-  patient_height                integer,
   device_id                     varchar(255),
   patient_id                    varchar(255),
-  basal_daily_max               integer,
-  basal_hourly                  integer,
-  bolus_max                     integer,
+  device_mode                   varchar(255),
+  battery_level                 float,
+  insulin_level                 float,
+  glucagon_level                float,
+  daily_max                     float,
+  basal_hourly                  float,
+  bolus_max                     float,
   last_update                   timestamptz,
   constraint pk_device_config primary key (id)
 );
 
 create table patient (
   id                            bigserial not null,
-  email                         varchar(255) not null,
-  user_uuid                     varchar(255),
-  first_name                    varchar(255),
-  last_name                     varchar(255),
-  sha_password                  varchar(64) not null,
+  device_id                     varchar(255),
+  patient_id                    varchar(255),
+  patient_first_name            varchar(255),
+  patient_last_name             varchar(255),
+  patient_gender                varchar(255),
+  patient_age                   integer,
+  patient_weight                integer,
+  patient_height                integer,
+  email_id                      varchar(255),
+  mobile_number                 varchar(255),
   last_update                   timestamptz,
-  constraint uq_patient_email unique (email),
   constraint pk_patient primary key (id)
 );
 

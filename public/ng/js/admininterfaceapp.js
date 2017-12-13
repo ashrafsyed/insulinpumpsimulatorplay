@@ -51,8 +51,10 @@ admininterfaceapp.config(['$routeProvider', function ($routeProvider) {
  * # AdminInterfaceCtrl
  * Controller of the AdminInterfaceCtrl
  */
-admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
+admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$location', '$route', function ($scope, $http, $log, $location, $route) {
     $scope.adminAuthorized = false;
+    $scope.deviceId = "";
+    $scope.patientId = "";
     $scope.formSelected = {
         patientProfile: false,
         deviceConfig:false
@@ -79,7 +81,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                                 swal.showValidationError('Incorrect PIN!!');
                             }
                             resolve()
-                        }, 2000)
+                        }, 1000)
                     })
                 },
                 allowOutsideClick: false
@@ -88,7 +90,8 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     var url = '/rest/v1/admininterface/authorize?adminpin=' + result.value;
                     $http.get(url).success(function(response) {
                         if (response.status == "success") {
-                            //TODO Fetch data frpm backend if already exists
+                            $scope.deviceId = response.deviceId;
+                            $scope.patientId = response.patientId;
                             $scope.adminAuthorized = true;
                             swal.close();
                         }
@@ -108,9 +111,43 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
 
     $scope.formDisplay = function (formSelected) {
         if (formSelected === "patientprofile"){
+            if ($scope.deviceId != "" && $scope.patientId != ""){
+                var getPatientDataUrl = "/rest/v1/admininterface/getpatientdata?patientId="+ $scope.patientId + "&deviceId=" + $scope.deviceId ;
+                $http.get(getPatientDataUrl).success(function(response) {
+                    if (response.status == "success" && response.hasOwnProperty("data"))
+                    {
+                        $scope.patientFormData = {
+                            patientFirstName: response.data.firstName,
+                            patientLastName: response.data.lastName,
+                            patientGender: response.data.gender,
+                            patientHeight: response.data.height,
+                            patientWeight: response.data.weight,
+                            patientAge:response.data.age,
+                            emergencyContactEmail: response.data.email,
+                            emergencyContactMobile:response.data.mobile
+                        }
+                    }
+                })
+            }
             $scope.formSelected.deviceConfig = false;
             $scope.formSelected.patientProfile = true;
         }else if (formSelected === "deviceconfig") {
+            if ($scope.deviceId != "" && $scope.patientId != ""){
+                var getDeviceDataUrl = "/rest/v1/admininterface/getdevicedata?patientId="+ $scope.patientId + "&deviceId=" + $scope.deviceId ;
+                $http.get(getDeviceDataUrl).success(function(response) {
+                    if (response.status == "success" && response.hasOwnProperty("data"))
+                    {
+                        $scope.deviceConfigData = {
+                            batteryLevel: response.data.battery,
+                            insulinLevel: response.data.insulin,
+                            glucagonLevel: response.data.glucagon,
+                            deviceMode: response.data.deviceMode,
+                            bolusMax: response.data.bolusMax,
+                            dailyMax:response.data.dailyMax
+                        }
+                    }
+                })
+            }
             $scope.formSelected.patientProfile = false;
             $scope.formSelected.deviceConfig = true;
         }
@@ -127,6 +164,16 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         emergencyContactMobile:""
     }
 
+    $scope.deviceConfigData = {
+        batteryLevel: "",
+        insulinLevel: "",
+        glucagonLevel: "",
+        deviceMode: "",
+        bolusMax: "",
+        dailyMax: ""
+    }
+
+
     $scope.deviceConfig = angular.copy($scope.originalDeviceConfig);
 
     $scope.resetForm = function (form) {
@@ -138,6 +185,8 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
         if (form.$valid){
             var savePatientDataUrl = "/rest/v1/admininterface/savepatientdata";
             var data = {
+                deviceId: $scope.deviceId,
+                patientId: $scope.patientId,
                 patientFirstName: $scope.patientFormData.patientFirstName,
                 patientLastName: $scope.patientFormData.patientLastName,
                 patientGender: $scope.patientFormData.patientGender,
@@ -149,20 +198,78 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
             };
 
             $http.post(savePatientDataUrl, JSON.stringify(data)).success(function (result) {
-                swal({
-                    title: "Saved",
-                    type: "success",
-                    text: "Patient Data Saved Successfully!!",
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-                // document.location.href = '/onsitepush/#/overview?type=campaign';
+                if (result.status == "success"){
+                    swal({
+                        title: "Saved",
+                        type: "success",
+                        text: "Patient Data Saved Successfully!!",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    $scope.formSelected = {
+                        patientProfile: false,
+                        deviceConfig:false
+                    }
+                    // document.location.href = '/onsitepush/#/overview?type=campaign';
+                }else {
+                    swal({
+                        title: "Sorry",
+                        type: "error",
+                        text: "Patient Data could not be Saved!!",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                }
             });
         } else {
             $scope.showErrMsg = true;
         }
     }
 
+    $scope.saveConfigData = function (form) {
+        $scope.showErrMsg = false;
+        if (form.$valid){
+            var saveConfigDataUrl = "/rest/v1/admininterface/saveconfigdata";
+            var data = {
+                deviceId: $scope.deviceId,
+                patientId: $scope.patientId,
+                battery: $scope.deviceConfigData.batteryLevel,
+                insulin: $scope.deviceConfigData.insulinLevel,
+                glucagon: $scope.deviceConfigData.glucagonLevel,
+                deviceMode: $scope.deviceConfigData.deviceMode,
+                bolusMax: $scope.deviceConfigData.bolusMax,
+                dailyMax: $scope.deviceConfigData.dailyMax
+            };
+
+            $http.post(saveConfigDataUrl, JSON.stringify(data)).success(function (result) {
+                if (result.status == "success"){
+                    swal({
+                        title: "Saved",
+                        type: "success",
+                        text: "Configuration Saved Successfully!!",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    $scope.formSelected = {
+                        patientProfile: false,
+                        deviceConfig:false
+                    }
+                }else {
+                    swal({
+                        title: "Sorry",
+                        type: "error",
+                        text: "Configuration data could not be Saved!!",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                }
+            });
+        } else {
+            $scope.showErrMsg = true;
+        }
+    }
 
 }]);
 

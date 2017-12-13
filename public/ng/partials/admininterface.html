@@ -73,7 +73,7 @@
                                 <label class="col-md-4 control-label">Age</label>
                                 <div class="col-md-2">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="patientAge" ng-model="patientFormData.patientAge" required>
+                                        <input type="number" class="form-control" name="patientAge" ng-model="patientFormData.patientAge" min="1" required>
                                         <span class="input-group-addon">Years</span>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                 <label class="col-md-4 control-label">Height</label>
                                 <div class="col-md-2">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="patientHeight" ng-model="patientFormData.patientHeight" required>
+                                        <input type="number" class="form-control" name="patientHeight" ng-model="patientFormData.patientHeight" min="1" required>
                                         <span class="input-group-addon">cms</span>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                                 <label class="col-md-4 control-label">Weight</label>
                                 <div class="col-md-2">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" name="patientWeight" ng-model="patientFormData.patientWeight" required>
+                                        <input type="number" class="form-control" name="patientWeight" ng-model="patientFormData.patientWeight" min="1" required>
                                         <span class="input-group-addon">Kgs</span>
                                     </div>
                                 </div>
@@ -137,66 +137,76 @@
                         <div ng-form="deviceConfigForm">
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">First Name</label>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" name="patientFirstName" ng-model="formData.patientFirstName" ng-maxlength="250">
+                                <label class="col-md-4 control-label">Battery Percentage</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="batteryLevel" ng-model="deviceConfigData.batteryLevel" required>
+                                        <span class="input-group-addon">%</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Last Name</label>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" name="patientLastName" ng-model="formData.patientLastName" ng-maxlength="250" ng-required>
+                                <label class="col-md-4 control-label">Insulin Percentage</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="insulinLevel" ng-model="deviceConfigData.insulinLevel" required>
+                                        <span class="input-group-addon">%</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Date of Birth</label>
-                                <div class="col-md-4">
-                                    <p class="input-group">
-                                        <input type="text" class="form-control" uib-datepicker-popup ng-model="formData.patientDOB" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-                                        </span>
-                                    </p>
+                                <label class="col-md-4 control-label">Glucagon Percentage</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="glucagonLevel" ng-model="deviceConfigData.glucagonLevel" required>
+                                        <span class="input-group-addon">%</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Patient Gender</label>
-                                <div class="col-md-8">
+                                <label class="col-md-4 control-label">Device Mode</label>
+                                <div class="col-md-6">
                                     <div class="radio radio-inline">
-                                        <input type="radio" ng-model="formData.patientGender" name="patientGender" value="MALE">
-                                        <label for="MALE">Male</label>
+                                        <input type="radio" ng-model="deviceConfigData.deviceMode" name="deviceMode" value="MANUAL">
+                                        <label>Manual Only</label>
                                     </div>
                                     <div class="radio radio-inline">
-                                        <input type="radio" ng-model="formData.patientGender" name="patientGender" value="FEMALE">
-                                        <label for="FEMALE">Female</label>
+                                        <input type="radio" ng-model="deviceConfigData.deviceMode" name="deviceMode" value="AUTOMANUAL">
+                                        <label >Auto & Manual</label>
                                     </div>
                                     <div class="col-md-12">
-                                        <span class="help-block text-danger" ng-show="showErrMsg && deviceConfigForm.patientGender.$error.required">Select the Gender</span>
+                                        <span class="help-block text-danger" ng-show="showErrMsg && deviceConfigForm.deviceMode.$error.required">Select the mode</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Height</label>
+                                <label class="col-md-4 control-label">Maximum Bolus</label>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" name="patientHeight" ng-model="formData.patientHeight" ng-maxlength="250" ng-required>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="bolusMax" ng-model="deviceConfigData.bolusMax" required>
+                                        <span class="input-group-addon">Insulin Units</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Weight</label>
+                                <label class="col-md-4 control-label">Daily Maximum Dosage</label>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" name="patientWeight" ng-model="formData.patientWeight" ng-maxlength="250" ng-required>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="dailyMax" ng-model="deviceConfigData.dailyMax" required>
+                                        <span class="input-group-addon">Insulin Units</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-md-offset-6" style="margin-left: 45%">
                                     <button type="submit" class="btn btn-info" ng-click="resetForm(deviceConfigForm)"><span class="fa fa-eject" aria-hidden="true"></span> Reset</button>
-                                    <button type="submit" class="btn btn-success" ng-click="saveConfig(deviceConfigForm)">Save Configuration</button>
+                                    <button type="submit" class="btn btn-success" ng-click="saveConfigData(deviceConfigForm)">Save Configuration</button>
                                 </div>
                             </div>
                         </div>

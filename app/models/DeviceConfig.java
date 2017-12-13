@@ -2,10 +2,11 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
@@ -17,35 +18,56 @@ public class DeviceConfig extends Model {
     @Id
     public long id;
 
-    public String patientFirstName;
-    public String patientLastName;
-    public String patientGender;
-    public LocalDate patientDob;
-    public int patientWeight;
-    public int patientHeight;
     public String deviceId;
     public String patientId;
-    public int  basalDailyMax;
-    public int  basalHourly;
-    public int  bolusMax;
+    public String deviceMode;
+    public Double batteryLevel;
+    public Double insulinLevel;
+    public Double glucagonLevel;
+    public Double dailyMax;
+    public Double basalHourly;
+    public Double bolusMax;
     public LocalDateTime lastUpdate;
 
     public static Finder<String, DeviceConfig> find = new Finder<>(DeviceConfig.class);
 
-    public DeviceConfig(String patientFirstName, String patientLastName, String patientGender,
-                        LocalDate patientDob, int basalDailyMax, int bolusMax){
+    public DeviceConfig(){
         this.deviceId = UUID.randomUUID().toString();
         this.patientId = UUID.randomUUID().toString();
-        this.basalDailyMax = basalDailyMax;
-        this.basalHourly = Math.floorDiv(basalDailyMax,24);
-        this.bolusMax = bolusMax;
         this.lastUpdate = LocalDateTime.now(ZoneId.of("Z"));
     }
 
-/*
-    public static DeviceConfig byUserName(Long firstName){
-        return find.query().where().eq("firstName",firstName).findUnique();
+    public static DeviceConfig getOrCreate () {
+        DeviceConfig config = find.query().where().findUnique();
+        if (config == null){
+            config = new DeviceConfig();
+            config.save();
+        }
+        return config;
     }
-*/
+    public static DeviceConfig createOrUpdate (String deviceId, String patientId, String deviceMode, Double batteryLevel, Double insulinLevel,
+                                               Double glucagonLevel, Double dailyMax, Double bolusMax) {
+        DeviceConfig config = null;
+        if (StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(patientId)){
+            config = new DeviceConfig();
+        } else {
+            config = DeviceConfig.byIds(deviceId, patientId);
+        }
+        config.deviceMode = deviceMode;
+        config.batteryLevel = batteryLevel;
+        config.insulinLevel = insulinLevel;
+        config.glucagonLevel = glucagonLevel;
+        config.dailyMax = dailyMax;
+        config.bolusMax = bolusMax;
+        config.basalHourly = Double.valueOf(dailyMax.intValue()/ 24);;
+        config.save();
+        return config;
+    }
+
+
+    public static DeviceConfig byIds(String deviceId, String patientId){
+        return find.query().where().eq("deviceId",deviceId).eq("patientId",patientId).findUnique();
+    }
+
 
 }
