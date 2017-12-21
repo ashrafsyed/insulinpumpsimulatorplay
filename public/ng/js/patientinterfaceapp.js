@@ -36,6 +36,11 @@ patientinterfaceapp.config(['$routeProvider', function ($routeProvider) {
  * Controller of the clientApp
  */
 patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
+    $scope.deviceId = "";
+    $scope.patientId = "";
+    $scope.powerOptionValue = false;
+    $scope.simulDivDisplay = false;
+
     /*Progress Bar Code*/
     $scope.max = 200;
 
@@ -58,6 +63,23 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     };
 
     $scope.powerSwitch = function () {
+
+        if ($scope.powerOptionValue) {
+            var getDeviceDataUrl = "/rest/v1/admininterface/getDeviceConfig";
+            $http.get(getDeviceDataUrl).success(function (response) {
+                if (response.status == "success") {
+                    $scope.deviceId = response.deviceId;
+                    $scope.patientId = response.patientId;
+                    $scope.simulDivDisplay = true;
+                }
+                if (response.status == "error") {
+                    swal('Oops...', response.message, 'error');
+                }
+            })
+        } else {
+            $scope.simulDivDisplay = false;
+        }
+
         $scope.random();
     }
 

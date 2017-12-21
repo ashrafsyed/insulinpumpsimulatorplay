@@ -10,6 +10,10 @@ GET             /interface/patient/                              controllers.Pat
 GET             /interface/doctor/                               controllers.DoctorInterface.index
 GET             /interface/admin/                                controllers.AdminInterface.index
 
+# Patient Interface
+GET             /rest/v1/admininterface/getDeviceConfig          controllers.PatientInterface.getDeviceConfig
+
+
 # Admin Interface
 GET             /rest/v1/admininterface/authorize                controllers.AdminInterface.adminAuthorization
 GET             /rest/v1/admininterface/getpatientdata           controllers.AdminInterface.getPatientData
