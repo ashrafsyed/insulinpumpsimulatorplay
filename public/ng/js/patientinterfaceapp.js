@@ -39,7 +39,57 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     $scope.deviceId = "";
     $scope.patientId = "";
     $scope.powerOptionValue = false;
-    $scope.simulDivDisplay = false;
+    $scope.simulationFormScreen = false;
+    $scope.simulationCompleted = false;
+    $scope.simulatorFormData = {
+        deviceMode: "AUTO",
+        startingBgl: "",
+        breakfastCHO: "",
+        lunchCHO: "",
+        dinnerCHO: ""
+    }
+
+    $scope.exerciseList = [
+        {id: 1, value: 'MILD'},
+        {id: 2, value: 'AVERAGE'},
+        {id: 3, value: 'RIGOROUS'},
+    ];
+
+    $scope.durationList = [
+        {id: 1, value: '1 Day'},
+        {id: 2, value: '2 Days'},
+        {id: 3, value: '3 Days'},
+        {id: 4, value: '4 Days'},
+        {id: 5, value: '5 Days'},
+    ];
+
+    $scope.onChangeDeviceMode = function () {
+        console.log($scope.simulatorFormData.deviceMode);
+    }
+
+    $scope.powerSwitch = function () {
+        if ($scope.powerOptionValue) {
+            var getDeviceDataUrl = "/rest/v1/admininterface/getDeviceConfig";
+            $http.get(getDeviceDataUrl).success(function (response) {
+                if (response.status == "success") {
+                    $scope.deviceId = response.deviceId;
+                    $scope.patientId = response.patientId;
+                    $scope.simulationFormScreen = true;
+                }
+                if (response.status == "error") {
+                    swal('Oops...', response.message, 'error');
+                }
+            })
+        } else {
+            $scope.simulationFormScreen = false;
+        }
+        $scope.random();
+    }
+
+    $scope.runSimulator = function(form) {
+        $scope.simulationFormScreen = false;
+        $scope.simulationCompleted = true;
+    }
 
     /*Progress Bar Code*/
     $scope.max = 200;
@@ -61,27 +111,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         $scope.dynamic = value;
         $scope.type = type;
     };
-
-    $scope.powerSwitch = function () {
-
-        if ($scope.powerOptionValue) {
-            var getDeviceDataUrl = "/rest/v1/admininterface/getDeviceConfig";
-            $http.get(getDeviceDataUrl).success(function (response) {
-                if (response.status == "success") {
-                    $scope.deviceId = response.deviceId;
-                    $scope.patientId = response.patientId;
-                    $scope.simulDivDisplay = true;
-                }
-                if (response.status == "error") {
-                    swal('Oops...', response.message, 'error');
-                }
-            })
-        } else {
-            $scope.simulDivDisplay = false;
-        }
-
-        $scope.random();
-    }
 
     /*HighCharts Code for BGL*/
     Highcharts.setOptions({
