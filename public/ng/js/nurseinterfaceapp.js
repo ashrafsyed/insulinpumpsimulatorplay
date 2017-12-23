@@ -1,13 +1,13 @@
 'use strict';
 /**
  * @ngdoc overview
- * @name patientinterfaceapp
+ * @name nurseinterfaceapp
  * @description
- * # patientinterfaceapp
+ * # nurseinterfaceapp
  *
  * Main module of the application.
  */
-var patientinterfaceapp = angular.module('patientinterfaceapp', [
+var nurseinterfaceapp = angular.module('nurseinterfaceapp', [
     "ngRoute",
     "ngCookies",
     "ngAnimate",
@@ -20,22 +20,22 @@ var patientinterfaceapp = angular.module('patientinterfaceapp', [
     'ui.bootstrap'
 ]);
 
-patientinterfaceapp.config(['$routeProvider', function ($routeProvider) {
+nurseinterfaceapp.config(['$routeProvider', function ($routeProvider) {
       $routeProvider
           .when('/', {
-            templateUrl: insulinpumpapp.assetsPath + "ng/partials/patient.html",
-            controller: 'PatientCtrl'
+            templateUrl: insulinpumpapp.assetsPath + "ng/partials/nurse.html",
+            controller: 'NurseCtrl'
           })
     }]);
 
 /**
  * @ngdoc function
- * @name patientinterfaceapp.controller:PatientCtrl
+ * @name nurseinterfaceapp.controller:NurseCtrl
  * @description
- * # PatientCtrl
+ * # NurseCtrl
  * Controller of the clientApp
  */
-patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
+nurseinterfaceapp.controller('NurseCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
     $scope.deviceId = "";
     $scope.patientId = "";
     $scope.powerOptionValue = false;
@@ -49,7 +49,10 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         dinnerCHO: ""
     }
 
-    $scope.deviceModes = [];
+    $scope.deviceModes = [
+        {id: 1, value: 'Auto'},
+        {id: 2, value: 'Manual'},
+    ];
 
     $scope.exerciseList = [
         {id: 1, value: 'MILD'},
@@ -76,13 +79,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                 if (response.status == "success") {
                     $scope.deviceId = response.deviceId;
                     $scope.patientId = response.patientId;
-                    if (response.hasOwnProperty("deviceMode")){
-                        if (response.deviceMode == "AUTO"){
-                            $scope.deviceModes = [{id: 1, value: "Auto"}]
-                        } else {
-                            $scope.deviceModes = [{id: 1, value: "Auto"}, {id: 2, value: "Manual"}]
-                        }
-                    }
                     $scope.simulationFormScreen = true;
                 }
                 if (response.status == "error") {
@@ -334,7 +330,7 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
 
 }]);
 
-patientinterfaceapp.controller('SignupCtrl',['$scope','$http', '$log', function ($scope, $http, $log) {
+nurseinterfaceapp.controller('SignupCtrl',['$scope','$http', '$log', function ($scope, $http, $log) {
         $scope.signup = function() {
             var payload = {
                 email : $scope.email,
@@ -348,7 +344,7 @@ patientinterfaceapp.controller('SignupCtrl',['$scope','$http', '$log', function 
         };
     }]);
 
-patientinterfaceapp.controller('DashboardCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
+nurseinterfaceapp.controller('DashboardCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
     /**
      * Sidebar Toggle & Cookie Control
      */

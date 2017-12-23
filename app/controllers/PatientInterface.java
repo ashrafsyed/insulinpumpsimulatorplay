@@ -26,6 +26,7 @@ public class PatientInterface extends Controller {
             resMap.put("status", "success");
             resMap.put("deviceId", config.deviceId);
             resMap.put("patientId", config.patientId);
+            resMap.put("deviceMode", config.deviceMode);
             return ok(gson.toJson(resMap)).as("application/json");
         } else {
             resMap.put("status", "error");
