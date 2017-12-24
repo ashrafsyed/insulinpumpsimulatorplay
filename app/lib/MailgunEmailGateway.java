@@ -2,15 +2,40 @@ package lib;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
 
 public class MailgunEmailGateway {
-    public static final String API_KEY = "key-40e1fa9b735f105be2b3173d87ea9804";
-    public static final String YOUR_DOMAIN_NAME = "sandboxf87c1d68b657436394c08bffce23e9da.mailgun.org";
+    public static final String API_KEY = "mailgun.apikey";
+    public static final String DOMAIN_NAME = "mailgun.domain";
 
-    public static void sendSimpleMessage() throws UnirestException {
+    private final Config config;
 
-        com.mashape.unirest.http.HttpResponse<com.mashape.unirest.http.JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + YOUR_DOMAIN_NAME + "/messages")
-                .basicAuth("api", API_KEY)
+    @javax.inject.Inject
+    public MailgunEmailGateway(Config config) {
+        this.config = config;
+    }
+
+    public String getApiKey() {
+        if (config.hasPath(API_KEY)) {
+            return config.getString(API_KEY);
+        } else {
+            throw new ConfigException.Missing(API_KEY);
+        }
+    }
+
+    public String getDomainName() {
+        if (config.hasPath(DOMAIN_NAME)) {
+            return config.getString(DOMAIN_NAME);
+        } else {
+            throw new ConfigException.Missing(DOMAIN_NAME);
+        }
+    }
+
+    public void sendSimpleMessage() throws UnirestException {
+
+        com.mashape.unirest.http.HttpResponse<com.mashape.unirest.http.JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + DOMAIN_NAME + "/messages")
+                .basicAuth("api", this.getApiKey())
                 .queryString("from", "Excited User <USER@YOURDOMAIN.COM>")
                 .queryString("to", "ashraf.skycom@gmail.com")
                 .queryString("subject", "hello")

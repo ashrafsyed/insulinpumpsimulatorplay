@@ -52,3 +52,15 @@ database.dispatcher {
   }
 }
 
+#mailgun credentials
+mailgun.apikey="key-40e1fa9b735f105be2b3173d87ea9804"
+mailgun.domain="sandboxf87c1d68b657436394c08bffce23e9da.mailgun.org"
+
+#textlocal credentials
+textlocal.apikey="I6lsXRaqmNE-WWCRjjCJ88k1hBf62BI30i9IXqabC0"
+textlocal.endpoint="http://api.txtlocal.com/send/?"
+
+#Nexmo credentials
+nexmo.endpoint="https://rest.nexmo.com/sms/json"
+nexmo.apikey="edff98d0"
+nexmo.apisecret="203244039e3c89fe"

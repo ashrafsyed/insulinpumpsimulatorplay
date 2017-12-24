@@ -24,9 +24,6 @@ libraryDependencies ++= Seq( javaJdbc , ehcache , javaWs, guice, filters,
   "commons-io" % "commons-io" % "2.5",
   "com.mashape.unirest" % "unirest-java" % "1.4.9"
 
-
-
-
 )
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
