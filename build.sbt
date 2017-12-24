@@ -21,7 +21,9 @@ libraryDependencies ++= Seq( javaJdbc , ehcache , javaWs, guice, filters,
   "com.typesafe.sbt" % "sbt-interface" % "0.13.15",
   "com.google.guava" % "guava" % "19.0",
   "com.google.code.gson" % "gson" % "2.8.2",
-  "commons-io" % "commons-io" % "2.5"
+  "commons-io" % "commons-io" % "2.5",
+  "com.mashape.unirest" % "unirest-java" % "1.4.9"
+
 
 
 
