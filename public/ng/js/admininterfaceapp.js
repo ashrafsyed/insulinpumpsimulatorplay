@@ -165,9 +165,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
     }
 
     $scope.deviceConfigData = {
-        batteryLevel: "",
-        insulinLevel: "",
-        glucagonLevel: "",
+        targetBgl: "",
         deviceMode: "",
         bolusMax: "",
         dailyMax: ""
@@ -190,8 +188,8 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                 patientFirstName: $scope.patientFormData.patientFirstName,
                 patientLastName: $scope.patientFormData.patientLastName,
                 patientGender: $scope.patientFormData.patientGender,
-                patientHeight: parseInt($scope.patientFormData.patientHeight),
-                patientWeight: parseInt($scope.patientFormData.patientWeight),
+                patientHeight: parseFloat($scope.patientFormData.patientHeight),
+                patientWeight: parseFloat($scope.patientFormData.patientWeight),
                 patientAge: parseInt($scope.patientFormData.patientAge),
                 emailId: $scope.patientFormData.emergencyContactEmail,
                 mobileNumber: $scope.patientFormData.emergencyContactMobile
@@ -234,10 +232,11 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
             var data = {
                 deviceId: $scope.deviceId,
                 patientId: $scope.patientId,
-                battery: $scope.deviceConfigData.batteryLevel,
-                insulin: $scope.deviceConfigData.insulinLevel,
-                glucagon: $scope.deviceConfigData.glucagonLevel,
+                battery: parseFloat(100.00),
+                insulin: parseFloat(100.00),
+                glucagon: parseFloat(100.00),
                 deviceMode: $scope.deviceConfigData.deviceMode,
+                targetBgl: $scope.deviceConfigData.targetBgl,
                 bolusMax: $scope.deviceConfigData.bolusMax,
                 dailyMax: $scope.deviceConfigData.dailyMax
             };

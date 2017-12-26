@@ -21,10 +21,8 @@ GET             /rest/v1/admininterface/getdevicedata            controllers.Adm
 POST            /rest/v1/admininterface/savepatientdata          controllers.AdminInterface.savePatientData
 POST            /rest/v1/admininterface/saveconfigdata           controllers.AdminInterface.saveDeviceConfigData
 
-# Sensor
-GET            /rest/v1/sensor/currentbgl/:devId/:patId          controllers.SensorController.getCurrentBGL(devId: Long, patId: Long)
-GET            /rest/v1/sensor/currentbgl/:devId/:patId          controllers.SensorController.bglHistory(devId: Long, patId: Long)
-POST           /rest/v1/sensor/recordbgl                         controllers.SensorController.recordBGL
+# Simulator
+POST            /rest/v1/simulator/runsimulation                 controllers.Simulator.runSimulator()
 
 
 # Map static resources from the /public folder to the /assets URL path

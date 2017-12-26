@@ -53,12 +53,12 @@ public class AdminInterface extends Controller {
         String gender = data.get("patientGender");
         String emailId = data.get("emailId");
         String mobileNumber = data.get("mobileNumber");
-        String height = data.get("patientHeight");
-        String weight = data.get("patientWeight");
+        Double height = Double.valueOf(data.get("patientHeight"));
+        Double weight = Double.valueOf(data.get("patientWeight"));
         String age = data.get("patientAge");
         if (StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(gender)){
             Patient patient = Patient.createOrUpdatePatientData(deviceId, patientId, firstName, lastName,
-                    gender, emailId, mobileNumber, Integer.parseInt(age), Integer.parseInt(height), Integer.parseInt(weight));
+                    gender, emailId, mobileNumber, Integer.parseInt(age), height, weight);
             resMap.put("status", "success");
             resMap.put("deviceId", patient.deviceId);
             resMap.put("patientId", patient.patientId);
@@ -80,14 +80,15 @@ public class AdminInterface extends Controller {
         String patientId = data.get("patientId");
         String battery = data.get("battery");
         String insulin = data.get("insulin");
-        String glucagon = data.get("glucagon");
+        Double glucagon = Double.valueOf(data.get("glucagon"));
         String deviceMode = data.get("deviceMode");
-        String bolusMax = data.get("bolusMax");
-        String dailyMax = data.get("dailyMax");
+        Double bolusMax = Double.valueOf(data.get("bolusMax"));
+        Double dailyMax = Double.valueOf(data.get("dailyMax"));
+        Double targetBgl = Double.valueOf(data.get("targetBgl"));
 
         if (StringUtils.isNotEmpty(deviceId) && StringUtils.isNotEmpty(patientId)){
             DeviceConfig patient = DeviceConfig.createOrUpdate(deviceId, patientId, deviceMode, Double.parseDouble(battery), Double.parseDouble(insulin),
-                                        Double.parseDouble(glucagon), Double.parseDouble(dailyMax), Double.parseDouble(bolusMax));
+                                        glucagon, dailyMax, bolusMax, targetBgl);
             resMap.put("status", "success");
             resMap.put("deviceId", patient.deviceId);
             resMap.put("patientId", patient.patientId);

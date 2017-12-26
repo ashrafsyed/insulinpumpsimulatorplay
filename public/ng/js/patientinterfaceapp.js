@@ -41,28 +41,34 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     $scope.powerOptionValue = false;
     $scope.simulationFormScreen = false;
     $scope.simulationCompleted = false;
+    $scope.plotBglChart = [];
     $scope.simulatorFormData = {
-        deviceMode: "AUTO",
+        deviceMode: "",
         startingBgl: "",
         breakfastCHO: "",
         lunchCHO: "",
-        dinnerCHO: ""
+        dinnerCHO: "",
+        breakfastGI: "",
+        lunchGI: "",
+        dinnerGI: "",
+        exercise: "",
+        simulatorDuration:0
     }
 
     $scope.deviceModes = [];
 
     $scope.exerciseList = [
-        {id: 1, value: 'MILD'},
-        {id: 2, value: 'AVERAGE'},
-        {id: 3, value: 'RIGOROUS'},
+        {id: 1, value: 'MILD (15-30 minutes)'},
+        {id: 2, value: 'AVERAGE (31 - 60 minutes)'},
+        {id: 3, value: 'RIGOROUS (1 - 2 hours)'},
     ];
 
     $scope.durationList = [
-        {id: 1, value: '1 Day'},
-        {id: 2, value: '2 Days'},
-        {id: 3, value: '3 Days'},
-        {id: 4, value: '4 Days'},
-        {id: 5, value: '5 Days'},
+        {id: '1 Day', value: 1440},
+        {id: '2 Days', value: 2880},
+        {id: '3 Days', value: 4320},
+        {id: '4 Days', value: 5760},
+        {id: '5 Days', value: 7200},
     ];
 
     $scope.onChangeDeviceMode = function () {
@@ -96,11 +102,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         $scope.random();
     }
 
-    $scope.runSimulator = function(form) {
-        // $scope.simulationFormScreen = false;
-        $scope.simulationCompleted = true;
-    }
-
     /*Progress Bar Code*/
     $scope.max = 200;
 
@@ -129,35 +130,38 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         }
     });
 
-    Highcharts.chart('bglchart', {
+    var bglChartOptions = {
         chart: {
+            renderTo: 'bglchart',
             type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            events: {
-                load: function () {
-
-                    // set up the updating of the chart each second
-                    var series = this.series[0];
-                    setInterval(function () {
-                        var x = (new Date()).getTime(), // current time
-                            y = Math.random()*(130-70)+70;
-                        series.addPoint([x, y], true, true);
-                    }, 5000);
-                }
-            }
+            borderColor: '#EBBA95',
+            borderWidth: 2,
+            borderRadius: 20,
+            marginRight: 20
         },
         title: {
             text: 'Patient Sugar Level'
         },
+        subtitle: {
+            text: 'Source: Alpha-Beta Pump Simulator'
+        },
         xAxis: {
             type: 'datetime',
-            tickPixelInterval: 150
+            dateTimeLabelFormats: {minute: '%H:%M'},
+            title: {text: 'Time (24 Hours)'},
+            tickInterval: 3600 * 1000
         },
         yAxis: {
             title: {
                 text: 'Blood Glucose Level'
             },
+            min: 0,
+            tickAmount: 8,
+            tickInterval: 50,
+            lineWidth: 1,
+            minorGridLineWidth: 0,
+            minorTickInterval: 'auto',
+            minorTickWidth: 10,
             plotLines: [{
                 value: 50,
                 width: 6,
@@ -165,7 +169,7 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
             },
             {
                 value: 70,
-                width: 2,
+                width: 4,
                 color: 'red',
                 dashStyle: 'largedash',
                 label: {
@@ -174,8 +178,8 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                 }
             },
             {
-                value: 110,
-                width: 2,
+                value: 200,
+                width: 4,
                 color: 'red',
                 dashStyle: 'largedash',
                 label: {
@@ -192,30 +196,48 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                     Highcharts.numberFormat(this.y, 2);
             }
         },
-        legend: {
-            enabled: false
-        },
-        exporting: {
-            enabled: false
-        },
         series: [{
             name: 'Blood Sugar Level',
-            data: (function () {
-                // generate an array of random data
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-
-                for (i = -19; i <= 0; i += 1) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: Math.random()
-                    });
-                }
-                return data;
-            }())
+            data: [],
+            pointStart: (new Date()).setHours(8,0),
+            pointInterval: 60 * 1000
         }]
-    });
+    };
+
+    $scope.runSimulator = function(form) {
+        $scope.showErrMsg = false;
+        if (form.$valid){
+            var simulatorUrl = "/rest/v1/simulator/runsimulation";
+            var data = {
+                deviceMode: $scope.simulatorFormData.deviceMode,
+                startBgl: parseFloat($scope.simulatorFormData.startingBgl),
+                cho1: parseFloat($scope.simulatorFormData.breakfastCHO),
+                cho2: parseFloat($scope.simulatorFormData.lunchCHO),
+                cho3: parseFloat($scope.simulatorFormData.dinnerCHO),
+                breakfastGI: parseFloat($scope.simulatorFormData.breakfastGI),
+                lunchGI: parseFloat($scope.simulatorFormData.lunchGI),
+                dinnerGI: parseFloat($scope.simulatorFormData.dinnerGI),
+                exercise: $scope.simulatorFormData.exercise,
+                duration: parseInt($scope.simulatorFormData.simulatorDuration),
+                deviceId: $scope.deviceId,
+                patientId: $scope.patientId,
+            };
+
+            $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
+                if (result.status == "success") {
+                    bglChartOptions.series[0].data = result.bglData;
+                    var bglChart = new Highcharts.Chart(bglChartOptions);
+                }
+            })
+
+
+            // $scope.simulationFormScreen = false;
+            $scope.simulationCompleted = true;
+        }else {
+            $scope.showErrMsg = true;
+        }
+
+    }
 
 
     /*Highcharts code for Battery Level*/

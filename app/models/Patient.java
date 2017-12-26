@@ -2,6 +2,7 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
+import lib.CarbohydrateModule;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -25,15 +26,17 @@ public class Patient extends Model {
     public String patientLastName;
     public String patientGender;
     public Integer patientAge;
-    public Integer patientWeight;
-    public Integer patientHeight;
+    public Double patientWeight;
+    public Double patientHeight;
+    public Double bloodVolume;
+    public Double glucoseSensitivity;
     public String emailId;
     public String mobileNumber;
     public LocalDateTime lastUpdate;
 
     public static Finder<String, Patient> find = new Finder<>(Patient.class);
     public Patient (String deviceId, String patientId, String patientFirstName, String patientLastName, String patientGender,
-                    String emailId, String mobileNumber, Integer patientAge, Integer patientHeight, Integer patientWeight){
+                    String emailId, String mobileNumber, Integer patientAge, Double patientHeight, Double patientWeight){
         this.deviceId = deviceId;
         this.patientId = patientId;
         this.lastUpdate = LocalDateTime.now(ZoneId.of("Z"));
@@ -45,11 +48,14 @@ public class Patient extends Model {
         this.patientAge = patientAge;
         this.patientWeight = patientWeight;
         this.patientHeight = patientHeight;
+        this.bloodVolume = Math.pow((0.3669 * (patientHeight/100)),3.0) + 0.03219 * patientWeight + 0.6041;
+        this.glucoseSensitivity = CarbohydrateModule.glucoseSensitivity(patientWeight);
+        this.save();
 
     }
 
     public static Patient createOrUpdatePatientData (String deviceId, String patientId, String patientFirstName, String patientLastName, String patientGender,
-                                                                 String emailId, String mobileNumber, Integer patientAge, Integer patientHeight, Integer patientWeight) {
+                                                                 String emailId, String mobileNumber, Integer patientAge, Double patientHeight, Double patientWeight) {
         if (StringUtils.isNotEmpty(deviceId) && StringUtils.isNotEmpty(patientId)){
             Patient patient = Patient.byIds(deviceId,patientId);
             if (patient == null) {
@@ -67,6 +73,9 @@ public class Patient extends Model {
                 patient.patientAge = patientAge;
                 patient.patientWeight = patientWeight;
                 patient.patientHeight = patientHeight;
+                patient.bloodVolume = Math.pow((0.3669 * (patientHeight/100)),3.0) + 0.03219 * patientWeight + 0.6041;
+                patient.glucoseSensitivity = CarbohydrateModule.glucoseSensitivity(patientWeight);
+
             }
             patient.save();
             return patient;

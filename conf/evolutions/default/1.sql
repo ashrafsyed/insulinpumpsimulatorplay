@@ -1,5 +1,5 @@
 # --- Created by Ebean DDL
-# ---To stop Ebean DDL generation, remove this comment and start using Evolutions
+# To stop Ebean DDL generation, remove this comment and start using Evolutions
 
 # --- !Ups
 
@@ -22,6 +22,7 @@ create table device_config (
   glucagon_level                float,
   daily_max                     float,
   basal_hourly                  float,
+  target_bgl                    float,
   bolus_max                     float,
   last_update                   timestamptz,
   constraint pk_device_config primary key (id)
@@ -35,8 +36,10 @@ create table patient (
   patient_last_name             varchar(255),
   patient_gender                varchar(255),
   patient_age                   integer,
-  patient_weight                integer,
-  patient_height                integer,
+  patient_weight                float,
+  patient_height                float,
+  blood_volume                  float,
+  glucose_sensitivity           float,
   email_id                      varchar(255),
   mobile_number                 varchar(255),
   last_update                   timestamptz,

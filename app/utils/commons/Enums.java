@@ -44,8 +44,8 @@ public class Enums {
         @EnumValue(value = "MANUAL")
         MANUAL("MANUAL"),
 
-        @EnumValue(value = "AUTOMATIC")
-        AUTOMATIC("AUTOMATIC");
+        @EnumValue(value = "AUTO")
+        AUTO("AUTO");
 
         public String value;
         deviceMode (String deviceMode) { this.value = deviceMode;}

@@ -26,6 +26,7 @@ public class DeviceConfig extends Model {
     public Double glucagonLevel;
     public Double dailyMax;
     public Double basalHourly;
+    public Double targetBgl;
     public Double bolusMax;
     public LocalDateTime lastUpdate;
 
@@ -46,7 +47,7 @@ public class DeviceConfig extends Model {
         return config;
     }
     public static DeviceConfig createOrUpdate (String deviceId, String patientId, String deviceMode, Double batteryLevel, Double insulinLevel,
-                                               Double glucagonLevel, Double dailyMax, Double bolusMax) {
+                                               Double glucagonLevel, Double dailyMax, Double bolusMax, Double targetBgl) {
         DeviceConfig config = null;
         if (StringUtils.isEmpty(deviceId) && StringUtils.isEmpty(patientId)){
             config = new DeviceConfig();
@@ -58,6 +59,7 @@ public class DeviceConfig extends Model {
         config.insulinLevel = insulinLevel;
         config.glucagonLevel = glucagonLevel;
         config.dailyMax = dailyMax;
+        config.targetBgl = targetBgl;
         config.bolusMax = bolusMax;
         config.basalHourly = Double.valueOf(dailyMax.intValue()/ 24);;
         config.save();
