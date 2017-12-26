@@ -38,6 +38,7 @@ patientinterfaceapp.config(['$routeProvider', function ($routeProvider) {
 patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
     $scope.nurseInterface = false;
     $scope.patientInterface = false;
+    $scope.NoManualMode = false;
     $scope.deviceId = "";
     $scope.patientId = "";
     $scope.powerOptionValue = false;
@@ -56,8 +57,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         exercise: "",
         simulatorDuration:0
     }
-
-    $scope.deviceModes = [];
 
     $scope.exerciseList = [
         {id: 1, value: 'MILD (15-30 minutes)'},
@@ -93,9 +92,10 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                     $scope.userInterface();     //To check if it is nurseInterface or Patient
                     if (response.hasOwnProperty("deviceMode")){
                         if (response.deviceMode == "AUTO"){
-                            $scope.deviceModes = [{id: 1, value: "Auto"}]
+                            $scope.simulatorFormData.deviceMode = "AUTO";
+                            $scope.NoManualMode = true;
                         } else {
-                            $scope.deviceModes = [{id: 1, value: "Auto"}, {id: 2, value: "Manual"}]
+                            $scope.NoManualMode = false;
                         }
                     }
                     $scope.simulationFormScreen = true;
@@ -112,8 +112,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     }
 
     /*Progress Bar Code*/
-    $scope.max = 200;
-
     $scope.random = function() {
         var value = Math.floor(Math.random() * 100 + 1);
         var type;
@@ -295,20 +293,35 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         $scope.showErrMsg = false;
         if (form.$valid){
             var simulatorUrl = "/rest/v1/simulator/runsimulation";
-            var data = {
-                deviceMode: $scope.simulatorFormData.deviceMode,
-                startBgl: parseFloat($scope.simulatorFormData.startingBgl),
-                cho1: parseFloat($scope.simulatorFormData.breakfastCHO),
-                cho2: parseFloat($scope.simulatorFormData.lunchCHO),
-                cho3: parseFloat($scope.simulatorFormData.dinnerCHO),
-                breakfastGI: parseFloat($scope.simulatorFormData.breakfastGI),
-                lunchGI: parseFloat($scope.simulatorFormData.lunchGI),
-                dinnerGI: parseFloat($scope.simulatorFormData.dinnerGI),
-                exercise: $scope.simulatorFormData.exercise,
-                duration: parseInt($scope.simulatorFormData.simulatorDuration),
-                deviceId: $scope.deviceId,
-                patientId: $scope.patientId,
-            };
+            var data = {};
+            if ($scope.simulatorFormData.deviceMode === "AUTO"){
+                data = {
+                    deviceMode: $scope.simulatorFormData.deviceMode,
+                    startBgl: parseFloat($scope.simulatorFormData.startingBgl),
+                    cho1: parseFloat($scope.simulatorFormData.breakfastCHO),
+                    cho2: parseFloat($scope.simulatorFormData.lunchCHO),
+                    cho3: parseFloat($scope.simulatorFormData.dinnerCHO),
+                    breakfastGI: parseFloat($scope.simulatorFormData.breakfastGI),
+                    lunchGI: parseFloat($scope.simulatorFormData.lunchGI),
+                    dinnerGI: parseFloat($scope.simulatorFormData.dinnerGI),
+                    exercise: $scope.simulatorFormData.exercise,
+                    duration: parseInt($scope.simulatorFormData.simulatorDuration),
+                    deviceId: $scope.deviceId,
+                    patientId: $scope.patientId,
+                };
+            } else {
+                data = {
+                    deviceMode: $scope.simulatorFormData.deviceMode,
+                    startBgl: parseFloat($scope.simulatorFormData.startingBgl),
+                    manualModeCHO: parseFloat($scope.simulatorFormData.manualModeCHO),
+                    manualModeGI: parseFloat($scope.simulatorFormData.manualModeGI),
+                    manualModeInsulinUnit: parseFloat($scope.simulatorFormData.manualModeInsulinUnit),
+                    exercise: $scope.simulatorFormData.exercise,
+                    duration: parseInt($scope.simulatorFormData.simulatorDuration),
+                    deviceId: $scope.deviceId,
+                    patientId: $scope.patientId,
+                };
+            }
 
             $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
                 if (result.status == "success") {
@@ -329,6 +342,21 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         }
 
     }
+
+    $scope.onChangeDeviceMode = function(form) {
+        $scope.simulatorFormData.breakfastCHO = "";
+        $scope.simulatorFormData.lunchCHO = "";
+        $scope.simulatorFormData.dinnerCHO = "";
+        $scope.simulatorFormData.breakfastGI = "";
+        $scope.simulatorFormData.lunchGI = "";
+        $scope.simulatorFormData.dinnerGI = "";
+        $scope.simulatorFormData.manualModeCHO = "";
+        $scope.simulatorFormData.manualModeGI = "";
+        $scope.simulatorFormData.manualModeInsulinUnit = "";
+        form.$setPristine();
+        form.$setUntouched();
+    }
+
 
 }]);
 

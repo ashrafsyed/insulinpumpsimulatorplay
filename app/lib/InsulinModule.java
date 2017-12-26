@@ -36,7 +36,7 @@ public class InsulinModule {
      * @param carbs
      * @param glycemicIndex
      * @param glucoseSensitivity
-     * @param initialBgl
+     * @param startBgl
      * @param targetBgl
      * @return
      */

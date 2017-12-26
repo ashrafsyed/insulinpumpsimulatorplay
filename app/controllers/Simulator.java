@@ -48,13 +48,29 @@ public class Simulator extends Controller {
 
             DeviceConfig config = DeviceConfig.byIds(deviceId,patientId);
 
-            resMap.put("batteryStatus", config.batteryLevel);
+            resMap.put("batteryStatus", config.batteryLevel);   //TODO reduce battery and insulin level after simulation execution
             resMap.put("insulinStatus", config.insulinLevel);
             resMap.put("glucagonStatus", config.glucagonLevel);
             resMap.put("status","success");
             resMap.put("bglData",bglMapList);
         } else {
+            Double startBgl = (Double) data.get("startBgl");
+            Double manualModeCHO = (Double) data.get("manualModeCHO");
+            Double manualModeGI = (Double) data.get("manualModeGI");
+            Double manualModeInsulinUnit = (Double) data.get("manualModeInsulinUnit");
+            String exercise = (String) data.get("exercise");
+            String deviceId = (String) data.get("deviceId");
+            String patientId = (String) data.get("patientId");
+            Integer duration = ((Double) data.get("duration")).intValue();
+            bglMapList = startSimulation(startBgl, carbsArray, glycemicIndexArray, deviceId, patientId, Enums.deviceMode.MANUAL);
 
+            DeviceConfig config = DeviceConfig.byIds(deviceId,patientId);
+
+            resMap.put("batteryStatus", config.batteryLevel);   //TODO reduce battery and insulin level after simulation execution
+            resMap.put("insulinStatus", config.insulinLevel);
+            resMap.put("glucagonStatus", config.glucagonLevel);
+            resMap.put("status","success");
+            resMap.put("bglData",bglMapList);
         }
 
         return ok(gson.toJson(resMap)).as("application/json");

@@ -16,15 +16,18 @@
 
                         <div class="form-group">
                             <label class="col-md-4 control-label">Device Mode</label>
-                            <div class="col-md-2">
-                                <ui-select ng-model="simulatorFormData.deviceMode" name="deviceMode" required>
-                                    <ui-select-match>
-                                        <span ng-bind="$select.selected.value"></span>
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="mode.value as mode in deviceModes | filter: $select.search">
-                                        <span ng-bind="mode.value"></span>
-                                    </ui-select-choices>
-                                </ui-select>
+                            <div class="col-md-6">
+                                <div class="radio radio-inline">
+                                    <input type="radio" ng-model="simulatorFormData.deviceMode" name="deviceMode" value="AUTO" id="deviceModeAuto" data-ng-change="onChangeDeviceMode(simulatorForm)">
+                                    <label for="deviceModeAuto">Auto</label>
+                                </div>
+                                <div class="radio radio-inline" ng-hide="NoManualMode">
+                                    <input type="radio" ng-model="simulatorFormData.deviceMode" name="deviceModeManual" value="MANUAL" id="deviceModeManual" data-ng-change="onChangeDeviceMode(simulatorForm)">
+                                    <label for="deviceModeManual">Manual</label>
+                                </div>
+                                <div class="col-md-12">
+                                    <span class="help-block text-danger" ng-show="showErrMsg && simulatorForm.deviceMode.$error.required">Select the mode</span>
+                                </div>
                             </div>
                         </div>
 
@@ -41,55 +44,80 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">Meals (CHO / Glycemic Index)</label>
-                            <div class="col-md-6">
-                                <table bgcolor="#f5f5dc" border="4" cellpadding="2" class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Breakfast (8:00 Uhr)</th>
-                                            <th>Lunch (12:00 Uhr)</th>
-                                            <th>Dinner (20:00 Uhr)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="breakfastCHO" ng-model="simulatorFormData.breakfastCHO" placeholder="0.00" required>
-                                                <span class="input-group-addon">grams</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="lunchCHO" ng-model="simulatorFormData.lunchCHO" placeholder="0.00" required>
-                                                <span class="input-group-addon">grams</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="dinnerCHO" ng-model="simulatorFormData.dinnerCHO" placeholder="0.00" required>
-                                                <span class="input-group-addon">grams</span>
-                                            </div>
-                                        </td>
-                                    </tbody>
-                                    <tbody>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="breakfastGI" ng-model="simulatorFormData.breakfastGI" placeholder="0.00 Glycemic Index" required>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="lunchGI" ng-model="simulatorFormData.lunchGI" placeholder="0.00 Glycemic Index" required>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="dinnerGI" ng-model="simulatorFormData.dinnerGI" placeholder="0.00 Glycemic Index" required>
-                                            </div>
-                                        </td>
-                                    </tbody>
-                                </table>
+                        <div data-ng-if="simulatorFormData.deviceMode == 'AUTO'">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Meals (CHO / Glycemic Index)</label>
+                                <div class="col-md-6">
+                                    <table bgcolor="#f5f5dc" border="4" cellpadding="2" class="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Breakfast (8:00 Uhr)</th>
+                                                <th>Lunch (12:00 Uhr)</th>
+                                                <th>Dinner (20:00 Uhr)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="breakfastCHO" ng-model="simulatorFormData.breakfastCHO" placeholder="0.00" required>
+                                                    <span class="input-group-addon">grams</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="lunchCHO" ng-model="simulatorFormData.lunchCHO" placeholder="0.00" required>
+                                                    <span class="input-group-addon">grams</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="dinnerCHO" ng-model="simulatorFormData.dinnerCHO" placeholder="0.00" required>
+                                                    <span class="input-group-addon">grams</span>
+                                                </div>
+                                            </td>
+                                        </tbody>
+                                        <tbody>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="breakfastGI" ng-model="simulatorFormData.breakfastGI" placeholder="0.00 Glycemic Index" required>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="lunchGI" ng-model="simulatorFormData.lunchGI" placeholder="0.00 Glycemic Index" required>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="dinnerGI" ng-model="simulatorFormData.dinnerGI" placeholder="0.00 Glycemic Index" required>
+                                                </div>
+                                            </td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div data-ng-if="simulatorFormData.deviceMode == 'MANUAL'">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Meals(CHO) / Glycemic Index / Insulin Units</label>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="manualModeCHO" ng-model="simulatorFormData.manualModeCHO" placeholder="0.00 Carbs" required>
+                                        <span class="input-group-addon">grams</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="manualModeGI" ng-model="simulatorFormData.manualModeGI" placeholder="0.00 Glycemic Index" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="manualModeInsulinUnit" ng-model="simulatorFormData.manualModeInsulinUnit" placeholder="0.00 IU" required>
+                                        <span class="input-group-addon">IU</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -126,7 +154,6 @@
                                 <button type="submit" class="btn btn-success" ng-click="runSimulator(simulatorForm)">Run Simulation</button>
                             </div>
                         </div>
-
                     </div>
                 </form>
             </div>
