@@ -36,6 +36,8 @@ patientinterfaceapp.config(['$routeProvider', function ($routeProvider) {
  * Controller of the clientApp
  */
 patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
+    $scope.nurseInterface = false;
+    $scope.patientInterface = false;
     $scope.deviceId = "";
     $scope.patientId = "";
     $scope.powerOptionValue = false;
@@ -71,8 +73,14 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         {id: '5 Days', value: 7200},
     ];
 
-    $scope.onChangeDeviceMode = function () {
-        console.log($scope.simulatorFormData.deviceMode);
+    $scope.userInterface = function () {
+        if (window.location.pathname.substring("patient")){
+            $scope.nurseInterface = false;
+            $scope.patientInterface = true;
+        }else {
+            $scope.nurseInterface = true;
+            $scope.patientInterface = false;
+        }
     }
 
     $scope.powerSwitch = function () {
@@ -82,6 +90,7 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                 if (response.status == "success") {
                     $scope.deviceId = response.deviceId;
                     $scope.patientId = response.patientId;
+                    $scope.userInterface();     //To check if it is nurseInterface or Patient
                     if (response.hasOwnProperty("deviceMode")){
                         if (response.deviceMode == "AUTO"){
                             $scope.deviceModes = [{id: 1, value: "Auto"}]
@@ -124,12 +133,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     };
 
     /*HighCharts Code for BGL*/
-    Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
-
     var bglChartOptions = {
         chart: {
             renderTo: 'bglchart',
@@ -204,47 +207,12 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         }]
     };
 
-    $scope.runSimulator = function(form) {
-        $scope.showErrMsg = false;
-        if (form.$valid){
-            var simulatorUrl = "/rest/v1/simulator/runsimulation";
-            var data = {
-                deviceMode: $scope.simulatorFormData.deviceMode,
-                startBgl: parseFloat($scope.simulatorFormData.startingBgl),
-                cho1: parseFloat($scope.simulatorFormData.breakfastCHO),
-                cho2: parseFloat($scope.simulatorFormData.lunchCHO),
-                cho3: parseFloat($scope.simulatorFormData.dinnerCHO),
-                breakfastGI: parseFloat($scope.simulatorFormData.breakfastGI),
-                lunchGI: parseFloat($scope.simulatorFormData.lunchGI),
-                dinnerGI: parseFloat($scope.simulatorFormData.dinnerGI),
-                exercise: $scope.simulatorFormData.exercise,
-                duration: parseInt($scope.simulatorFormData.simulatorDuration),
-                deviceId: $scope.deviceId,
-                patientId: $scope.patientId,
-            };
-
-            $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
-                if (result.status == "success") {
-                    bglChartOptions.series[0].data = result.bglData;
-                    var bglChart = new Highcharts.Chart(bglChartOptions);
-                }
-            })
-
-
-            // $scope.simulationFormScreen = false;
-            $scope.simulationCompleted = true;
-        }else {
-            $scope.showErrMsg = true;
-        }
-
-    }
-
-
     /*Highcharts code for Battery Level*/
 
-    var gaugeOptions = {
+    var batteryGuageOptions = {
 
         chart: {
+            renderTo: 'container-battery',
             type: 'solidgauge',
             height:150,
             width:150,
@@ -277,6 +245,12 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
 
         // the value axis
         yAxis: {
+            min: 0,
+            max: 100,
+            title: {
+                text: 'Battery',
+                y: -70
+            },
             stops: [
                 [0.1, '#55BF3B'], // green
                 [0.5, '#DDDF0D'], // yellow
@@ -285,9 +259,6 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
             lineWidth: 0,
             minorTickInterval: null,
             tickAmount: 2,
-            title: {
-                y: -70
-            },
             labels: {
                 y: 16
             }
@@ -301,26 +272,13 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                     useHTML: true
                 }
             }
-        }
-    };
-
-// The battery gauge
-    var chartSpeed = Highcharts.chart('container-battery', Highcharts.merge(gaugeOptions, {
-        yAxis: {
-            min: 0,
-            max: 100,
-            title: {
-                text: 'Battery'
-            }
         },
-
-        credits: {
+        credit: {
             enabled: false
         },
-
         series: [{
-            name: 'Time',
-            data: [50],
+            name: 'Battery Status',
+            data: [],
             dataLabels: {
                 format: '<div style="text-align:center; margin: -26px"><span style="font-size:15px;color:' +
                 ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
@@ -331,28 +289,46 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
             }
         }]
 
-    }));
+    };
 
-// Bring life to the dials
-    setInterval(function () {
-        // Speed
-        var point,
-            newVal,
-            inc;
+    $scope.runSimulator = function(form) {
+        $scope.showErrMsg = false;
+        if (form.$valid){
+            var simulatorUrl = "/rest/v1/simulator/runsimulation";
+            var data = {
+                deviceMode: $scope.simulatorFormData.deviceMode,
+                startBgl: parseFloat($scope.simulatorFormData.startingBgl),
+                cho1: parseFloat($scope.simulatorFormData.breakfastCHO),
+                cho2: parseFloat($scope.simulatorFormData.lunchCHO),
+                cho3: parseFloat($scope.simulatorFormData.dinnerCHO),
+                breakfastGI: parseFloat($scope.simulatorFormData.breakfastGI),
+                lunchGI: parseFloat($scope.simulatorFormData.lunchGI),
+                dinnerGI: parseFloat($scope.simulatorFormData.dinnerGI),
+                exercise: $scope.simulatorFormData.exercise,
+                duration: parseInt($scope.simulatorFormData.simulatorDuration),
+                deviceId: $scope.deviceId,
+                patientId: $scope.patientId,
+            };
 
-        if (chartSpeed) {
-            point = chartSpeed.series[0].points[0];
-            inc = Math.floor(Math.random() * 100 + 1);
-            newVal = point.y + inc;
+            $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
+                if (result.status == "success") {
+                    //Populate Battery Highchart Guage Data
+                    batteryGuageOptions.series[0].data = [result.batteryStatus];
+                    var batteryChart = new Highcharts.Chart(batteryGuageOptions);
 
-            if (newVal < 0 || newVal > 200) {
-                newVal = point.y - inc;
-            }
+                    //Populate BGL Highchart Data
+                    bglChartOptions.series[0].data = result.bglData;
+                    var bglChart = new Highcharts.Chart(bglChartOptions);
+                }
+            })
 
-            point.update(newVal);
+            // $scope.simulationFormScreen = false;
+            $scope.simulationCompleted = true;
+        }else {
+            $scope.showErrMsg = true;
         }
 
-    }, 5000);
+    }
 
 }]);
 

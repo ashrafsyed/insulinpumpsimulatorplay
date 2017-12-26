@@ -45,6 +45,12 @@ public class Simulator extends Controller {
             String patientId = (String) data.get("patientId");
             Integer duration = ((Double) data.get("duration")).intValue();
             bglMapList = startSimulation(startBgl, carbsArray, glycemicIndexArray, deviceId, patientId, Enums.deviceMode.AUTO);
+
+            DeviceConfig config = DeviceConfig.byIds(deviceId,patientId);
+
+            resMap.put("batteryStatus", config.batteryLevel);
+            resMap.put("insulinStatus", config.insulinLevel);
+            resMap.put("glucagonStatus", config.glucagonLevel);
             resMap.put("status","success");
             resMap.put("bglData",bglMapList);
         } else {
