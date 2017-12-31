@@ -34,9 +34,9 @@ public class MailgunEmailGateway {
 
     public void sendSimpleMessage() throws UnirestException {
 
-        com.mashape.unirest.http.HttpResponse<com.mashape.unirest.http.JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + DOMAIN_NAME + "/messages")
+        com.mashape.unirest.http.HttpResponse<com.mashape.unirest.http.JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + this.getDomainName() + "/messages")
                 .basicAuth("api", this.getApiKey())
-                .queryString("from", "Excited User <USER@YOURDOMAIN.COM>")
+                .queryString("from", this.getDomainName())
                 .queryString("to", "ashraf.skycom@gmail.com")
                 .queryString("subject", "hello")
                 .queryString("text", "testing")

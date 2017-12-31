@@ -24,17 +24,17 @@ alphabetapumpapp.config(['$routeProvider', function ($routeProvider) {
       $routeProvider
           .when('/', {
             templateUrl: insulinpumpapp.assetsPath + "ng/partials/alphabetapump.html",
-            controller: 'PatientCtrl'
+            controller: 'AlphaBetaPumpCtrl'
           })
     }]);
 
 /**
  * @ngdoc function
- * @name alphabetapumpapp.controller:PatientCtrl
+ * @name alphabetapumpapp.controller:AlphaBetaPumpCtrl
  * @description
- * # PatientCtrl
+ * # AlphaBetaPumpCtrl
  */
-alphabetapumpapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
+alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
     $scope.nurseInterface = false;
     $scope.patientInterface = false;
     $scope.NoManualMode = false;
@@ -74,7 +74,7 @@ alphabetapumpapp.controller('PatientCtrl',['$scope','$http', '$log', '$location'
     ];
 
     $scope.userInterface = function () {
-        if (window.location.pathname.substring("patient")){
+        if (window.location.pathname.includes("patient")){
             $scope.nurseInterface = false;
             $scope.patientInterface = true;
         }else {
