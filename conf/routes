@@ -23,6 +23,7 @@ POST            /rest/v1/admininterface/saveconfigdata           controllers.Adm
 
 # Simulator
 POST            /rest/v1/simulator/runsimulation                 controllers.Simulator.runSimulator()
+GET             /rest/v1/simulator/sos                           controllers.Simulator.sos()
 
 
 # Map static resources from the /public folder to the /assets URL path

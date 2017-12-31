@@ -125,4 +125,13 @@ public class Simulator extends Controller {
 
         return bglList;
     }
+
+    public Result sos(){
+        Gson gson = new Gson();
+        Map<String, Object> resMap = new HashMap<>();
+        //TODO Need to contact emergency here
+        resMap.put("status","success");
+        resMap.put("message","Please do not panic. They will be here in no time.");
+        return ok(gson.toJson(resMap)).as("application/json");
+    }
 }

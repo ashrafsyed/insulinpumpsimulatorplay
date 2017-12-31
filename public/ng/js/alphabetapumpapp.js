@@ -7,7 +7,7 @@
  *
  * Main module of the application.
  */
-var patientinterfaceapp = angular.module('patientinterfaceapp', [
+var alphabetapumpapp = angular.module('alphabetapumpapp', [
     "ngRoute",
     "ngCookies",
     "ngAnimate",
@@ -20,22 +20,21 @@ var patientinterfaceapp = angular.module('patientinterfaceapp', [
     'ui.bootstrap'
 ]);
 
-patientinterfaceapp.config(['$routeProvider', function ($routeProvider) {
+alphabetapumpapp.config(['$routeProvider', function ($routeProvider) {
       $routeProvider
           .when('/', {
-            templateUrl: insulinpumpapp.assetsPath + "ng/partials/patient.html",
+            templateUrl: insulinpumpapp.assetsPath + "ng/partials/alphabetapump.html",
             controller: 'PatientCtrl'
           })
     }]);
 
 /**
  * @ngdoc function
- * @name patientinterfaceapp.controller:PatientCtrl
+ * @name alphabetapumpapp.controller:PatientCtrl
  * @description
  * # PatientCtrl
- * Controller of the clientApp
  */
-patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
+alphabetapumpapp.controller('PatientCtrl',['$scope','$http', '$log', '$location', function ($scope, $http, $log, $location) {
     $scope.nurseInterface = false;
     $scope.patientInterface = false;
     $scope.NoManualMode = false;
@@ -45,19 +44,21 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     $scope.simulationFormScreen = false;
     $scope.simulationCompleted = false;
     $scope.plotBglChart = [];
-    $scope.simulatorFormData = {
-        deviceMode: "",
-        startingBgl: "",
-        breakfastCHO: "",
-        lunchCHO: "",
-        dinnerCHO: "",
-        breakfastGI: "",
-        lunchGI: "",
-        dinnerGI: "",
-        exercise: "",
-        simulatorDuration:0
-    }
 
+    $scope.resetFormData = function () {
+        $scope.simulatorFormData = {
+            deviceMode: "AUTO",
+            startingBgl: "",
+            breakfastCHO: "",
+            lunchCHO: "",
+            dinnerCHO: "",
+            breakfastGI: "",
+            lunchGI: "",
+            dinnerGI: "",
+            exercise: "",
+            simulatorDuration: 0
+        }
+    }
     $scope.exerciseList = [
         {id: 1, value: 'MILD (15-30 minutes)'},
         {id: 2, value: 'AVERAGE (31 - 60 minutes)'},
@@ -83,6 +84,7 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
     }
 
     $scope.powerSwitch = function () {
+        $scope.resetFormData();
         if ($scope.powerOptionValue) {
             var getDeviceDataUrl = "/rest/v1/admininterface/getDeviceConfig";
             $http.get(getDeviceDataUrl).success(function (response) {
@@ -90,9 +92,8 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
                     $scope.deviceId = response.deviceId;
                     $scope.patientId = response.patientId;
                     $scope.userInterface();     //To check if it is nurseInterface or Patient
-                    if (response.hasOwnProperty("deviceMode")){
-                        if (response.deviceMode == "AUTO"){
-                            $scope.simulatorFormData.deviceMode = "AUTO";
+                    if (response.hasOwnProperty("deviceMode") && $scope.patientInterface){
+                        if (response.deviceMode == "AUTO"){ //this means only AUTO Mode is allowed for the patient
                             $scope.NoManualMode = true;
                         } else {
                             $scope.NoManualMode = false;
@@ -108,26 +109,21 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
             $scope.simulationFormScreen = false;
             $scope.simulationCompleted = false;
         }
-        $scope.random();
     }
 
-    /*Progress Bar Code*/
-    $scope.random = function() {
-        var value = Math.floor(Math.random() * 100 + 1);
-        var type;
-
+    /*Progress Bar Code for Insulin or Glucagon Reservoir*/
+    $scope.reservoirProgressBar = function(reservoirType, value) {
         if (value < 20) {
-            type = 'danger';
+            reservoirType = 'danger';
         } else if (value < 50) {
-            type = 'warning';
+            reservoirType = 'warning';
         } else if (value < 75) {
-            type = 'info';
+            reservoirType = 'info';
         } else {
-            type = 'success';
+            reservoirType = 'success';
         }
-        $scope.showWarning = type === 'danger' || type === 'warning';
-        $scope.dynamic = value;
-        $scope.type = type;
+        $scope.showWarning = reservoirType === 'danger' || reservoirType === 'warning';
+        $scope.reservoirType = reservoirType;
     };
 
     /*HighCharts Code for BGL*/
@@ -325,6 +321,10 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
 
             $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
                 if (result.status == "success") {
+                    $scope.insulinStatus = result.insulinStatus;
+                    $scope.reservoirProgressBar("insulinType", $scope.insulinStatus);
+                    $scope.glucagonStatus = result.glucagonStatus;
+                    $scope.reservoirProgressBar("glucagonType", $scope.glucagonStatus);
                     //Populate Battery Highchart Guage Data
                     batteryGuageOptions.series[0].data = [result.batteryStatus];
                     var batteryChart = new Highcharts.Chart(batteryGuageOptions);
@@ -357,10 +357,32 @@ patientinterfaceapp.controller('PatientCtrl',['$scope','$http', '$log', '$locati
         form.$setUntouched();
     }
 
+    $scope.SOS = function () {
+        swal({
+            title: 'Do you need Assistance?',
+            text: "Please confirm to notify the person in emergency contact",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Call Emergency'
+        }).then((result)=>{
+            if(result.value){
+                var sosUrl = "/rest/v1/simulator/sos";
+                $http.get(sosUrl).success(function (res) {
+                    if (res.status == "success") {
+                        swal({title: "Emergency Contacts Notified", text: res.message, timer: 3000});
+                    } else if (res.status == "error") {
+                        swal("Oops !", res.message, "error");
+                    }
+                });
+            }
+        })
+    }
 
 }]);
 
-patientinterfaceapp.controller('SignupCtrl',['$scope','$http', '$log', function ($scope, $http, $log) {
+alphabetapumpapp.controller('SignupCtrl',['$scope','$http', '$log', function ($scope, $http, $log) {
         $scope.signup = function() {
             var payload = {
                 email : $scope.email,
@@ -374,7 +396,7 @@ patientinterfaceapp.controller('SignupCtrl',['$scope','$http', '$log', function 
         };
     }]);
 
-patientinterfaceapp.controller('DashboardCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
+alphabetapumpapp.controller('DashboardCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
     /**
      * Sidebar Toggle & Cookie Control
      */

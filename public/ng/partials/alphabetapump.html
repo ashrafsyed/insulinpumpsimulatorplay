@@ -172,11 +172,14 @@
                     </div>
                     <div class="col-md-3 col-md-offset-0">
                         <label class="text-center">Insulin</label>
-                        <uib-progressbar class="progress-striped active" value="dynamic" type="{{type}}">{{type}} <i ng-show="showWarning"></i></uib-progressbar>
+                        <uib-progressbar class="progress-striped active" value="insulinStatus" type="{{insulinType}}">{{insulinType}} <i ng-show="showWarning"></i></uib-progressbar>
 
                         <label class="text-center">Glucagon</label>
-                        <uib-progressbar class="progress-striped active" value="dynamic" type="{{type}}">{{type}} <i ng-show="showWarning"></i></uib-progressbar>
+                        <uib-progressbar class="progress-striped active" value="glucagonStatus" type="{{glucagonType}}">{{glucagonType}} <i ng-show="showWarning"></i></uib-progressbar>
 
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-danger btn-circle btn-xl" ng-click="SOS()"><span class="fa fa-ambulance" aria-hidden="true"></span> SOS (Call Emergency)</button>
                     </div>
                 </div>
 
