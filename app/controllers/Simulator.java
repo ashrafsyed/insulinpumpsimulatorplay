@@ -126,6 +126,10 @@ public class Simulator extends Controller {
         return bglList;
     }
 
+    /**
+     * This method sends notification to the emergency contact person
+     * @return
+     */
     public Result sos(){
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();

@@ -6,6 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Results;
+import views.html.gcm_manifest_json;
+import views.html.gcm_serviceworker_js;
 import views.html.index;
 
 import java.util.HashMap;
@@ -37,61 +40,11 @@ public class Application extends Controller {
         return redirect(routes.NurseInterface.index());
     }
 
-
-    public Result login() {
-/*
-        Form<Login> loginForm = Form.form(Login.class).bindFromRequest();
-        Gson gson = new Gson();
-        Map<String, String> resMap = new HashMap<>();
-        if (loginForm.hasErrors()) {
-            return badRequest(loginForm.errorsAsJson());
-        }
-        Login loggingInUser = loginForm.get();
-        User user = User.byUserName("Ashraf");
-        if(user == null) {
-            return badRequest(gson.toJson(resMap.put("error", "Incorrect email or password"))).as("application/json");
-        } else {
-            session().clear();
-//            session("username", loggingInUser.email);
-
-            resMap.put("message", "Logged in successfully");
-            resMap.put("success", "Logged in successfully");
-            return ok(gson.toJson(resMap)).as("application/json");
-        }
-*/
-
-        return ok();
+    public Result gcmManifest(){
+        return Results.ok (gcm_manifest_json.render()).as("application/json");
     }
 
-    public Result logout() {
-        session().clear();
-        Gson gson = new Gson();
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("success", "Logged out Successfully");
-        return ok(gson.toJson(responseMap)).as("application/json");
-    }
-
-    public Result isAuthenticated() {
-        if(session().get("username") == null) {
-            return unauthorized();
-        } else {
-            Gson gson = new Gson();
-            Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("message", "User is logged in already");
-            responseMap.put("user", session().get("username"));
-            responseMap.put("success", "Authenticated");
-            return ok(gson.toJson(responseMap)).as("application/json");
-        }
-    }
-
-    public static class UserForm {
-        @Constraints.Required
-        @Constraints.Email
-        public String email;
-    }
-
-    public static class Login extends UserForm {
-        @Constraints.Required
-        public String password;
+    public Result gcmServiceWorker(){
+        return ok (gcm_serviceworker_js.render()).as("text/javascript");
     }
 }

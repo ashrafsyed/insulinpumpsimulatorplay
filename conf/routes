@@ -25,6 +25,9 @@ POST            /rest/v1/admininterface/saveconfigdata           controllers.Adm
 POST            /rest/v1/simulator/runsimulation                 controllers.Simulator.runSimulator()
 GET             /rest/v1/simulator/sos                           controllers.Simulator.sos()
 
+# Push Notification
+GET             /manifest.json                                   controllers.Application.gcmManifest()
+GET             /gcm_service_worker.js                           controllers.Application.gcmServiceWorker()
 
 # Map static resources from the /public folder to the /assets URL path
 GET             /assets/*file                                    controllers.Assets.at(path="/public", file)
