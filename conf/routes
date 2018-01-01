@@ -26,7 +26,8 @@ POST            /rest/v1/simulator/runsimulation                 controllers.Sim
 GET             /rest/v1/simulator/sos                           controllers.Simulator.sos()
 
 # Push Notification
-GET             /manifest.json                                   controllers.Application.gcmManifest()
+GET             /gcm_main.js                                     controllers.Application.mainJs()
+GET             /gcm_manifest.json                               controllers.Application.gcmManifest()
 GET             /gcm_service_worker.js                           controllers.Application.gcmServiceWorker()
 
 # Map static resources from the /public folder to the /assets URL path

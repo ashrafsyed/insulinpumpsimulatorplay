@@ -7,6 +7,7 @@ import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
+import views.html.gcm_main_js;
 import views.html.gcm_manifest_json;
 import views.html.gcm_serviceworker_js;
 import views.html.index;
@@ -40,11 +41,16 @@ public class Application extends Controller {
         return redirect(routes.NurseInterface.index());
     }
 
+    public Result mainJs(){
+        return Results.ok (gcm_main_js.render()).as("text/javascript");
+    }
+
     public Result gcmManifest(){
         return Results.ok (gcm_manifest_json.render()).as("application/json");
     }
 
     public Result gcmServiceWorker(){
+        response().setHeader("cache-control", "no-cache");
         return ok (gcm_serviceworker_js.render()).as("text/javascript");
     }
 }

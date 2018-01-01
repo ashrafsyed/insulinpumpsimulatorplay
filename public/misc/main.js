@@ -1,6 +1,6 @@
 'use strict';
 
-var API_KEY = 'AAAAJ2UlyrQ:APA91bEk5JJUmriVgr611c4snT81YaRekNhBJm48Jd9j6SYGZL4AOY_nZciY4cmVp4BarjzpnYS1c8VYJdQ9yS66WsonybF_lGBw8wo9VAEC4mpxeZsV4HOcQlggtzX-Aus_hevvH1y0';
+var API_KEY = '';
 var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
 
 var curlCommandDiv = document.querySelector('.js-curl-command');
@@ -172,9 +172,9 @@ var initialiseState = function () {
 // enhance and add push messaging support, otherwise continue without it.
 if ('serviceWorker' in navigator) {
     var serviceWorkerPath = '/gcm_service_worker.js';
-    navigator.serviceWorker.register (serviceWorkerPath).then(function (registration) {
+    navigator.serviceWorker.register (serviceWorkerPath).then(function (swRegistration) {
         console.log("Service Worker Registration Competed!");
-        registration.update();
+        swRegistration.update();
         initialiseState();
     }).catch(function (reason) {
         console.log ("Cannot load Service Worker...");
