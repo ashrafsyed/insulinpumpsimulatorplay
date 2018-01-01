@@ -26,9 +26,12 @@ POST            /rest/v1/simulator/runsimulation                 controllers.Sim
 GET             /rest/v1/simulator/sos                           controllers.Simulator.sos()
 
 # Push Notification
-GET             /gcm_main.js                                     controllers.Application.mainJs()
-GET             /gcm_manifest.json                               controllers.Application.gcmManifest()
-GET             /gcm_service_worker.js                           controllers.Application.gcmServiceWorker()
+GET             /gcm_main.js                                     controllers.BrowserPush.mainJs()
+GET             /gcm_manifest.json                               controllers.BrowserPush.gcmManifest()
+GET             /gcm_service_worker.js                           controllers.BrowserPush.gcmServiceWorker()
+OPTIONS         /rest/v1/push/register-subscription              controllers.BrowserPush.registerSubscriptionPreflight()
+POST            /rest/v1/push/register-subscription              controllers.BrowserPush.registerSubscription()
+GET            /rest/v1/push/fetch-notification                 controllers.BrowserPush.fetchNotification()
 
 # Map static resources from the /public folder to the /assets URL path
 GET             /assets/*file                                    controllers.Assets.at(path="/public", file)

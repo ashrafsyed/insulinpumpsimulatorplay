@@ -1,104 +1,80 @@
-var showNotification = function (title, options) {
-    var options = options || {};
-    options = {
-                            body: data.body,
-                            tag: data.tag,
-                            icon: data.icon,
-                            requireInteraction: false
-                            };
-    return self.registration.showNotification(title, options);
-}
+"use strict";
+
+var url = [];
+var count = 0;
 
 self.addEventListener('install', function(event) {
-    event.waitUntil(self.skipWaiting());
-})
+    event.waitUntil(self.skipWaiting()); //will install the service worker
+});
 
 self.addEventListener('activate', function(event) {
-    event.waitUntil(self.clients.claim());
+    event.waitUntil(self.clients.claim()); //will activate the serviceworker
 });
+
+// Register event listener for the 'notificationclick' event.
+self.addEventListener('notificationclick', function(event) {
+event.notification.close();
+
+event.waitUntil(
+clients.matchAll({
+type: "window"
+})
+.then(function(clientList) {
+
+if (clients.openWindow) {
+var c = count;
+count++;
+return clients.openWindow(url[c]);
+}
+})
+);
+
+});
+
+
+self.addEventListener('push', function(event) {
+    event.waitUntil(self.registration.pushManager.getSubscription().then(function(subscription) {
+        console.log("subscription", subscription);
+        var registrationId = null;
+        if ('subscriptionId' in subscription) {
+            registrationId = subscription.subscriptionId;
+        } else {
+            registrationId = subscription.endpoint.split("/").reverse()[0];
+        }
+
+        return fetch("/rest/v1/push/fetch-notification?registrationId=" + registrationId).then(function(response) {
+            if (response.status != 200) {
+                console.log("Fetch Notification Failed!")
+            }
+            var payload = {
+                title: 'Alpha Beta Pump Simulator',
+                body: 'Warning!! The BGL level is too high. The patient may die',
+                icon: 'assets/images/warning_sign.png',
+                vibrate: [500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500],
+                sound: 'assets/misc/Alert.mp3',
+                url: 'https://www.google.com'
+            };
+
+            url.push(payload.url);
+            return self.registration.showNotification(payload.title, {
+                body: payload.body,
+                icon: payload.icon,
+                vibrate: payload.vibrate,
+                sound: payload.sound,
+                tag: payload.url + payload.body + payload.icon + payload.title
+            });
+
 
 @*
-self.addEventListener('push', function(event) {
-    console.log('Received a push message', event);
-
-    var title = 'Yay a message.';
-    var body = 'We have received a push message.';
-    var icon = '/images/admin.png';
-    var tag = 'simple-push-demo-notification-tag';
-
-    event.waitUntil(
-        self.registration.showNotification(title, {
-            body: body,
-            icon: icon,
-            tag: tag
-        })
-    );
-});
+            var payload = response.data;
+            url.push(payload.url);
+            return self.registration.showNotification(payload.title, {
+                body: payload.body,
+                icon: payload.icon,
+                tag: payload.url + payload.body + payload.icon + payload.title
+            });
 *@
-
-var url = "path/to/your/json/file/json-data.php?param="+Math.random();
-self.addEventListener('push', function(event) {
-    event.waitUntil(
-        fetch(url).then(function(response) {
-            if (response.status !== 200) {
-            // Either show a message to the user explaining the error
-            // or enter a generic message and handle the
-            // onnotificationclick event to direct the user to a web page
-            console.log('Looks like there was a problem. Status Code: ' + response.status);
-            throw new Error();
-        }
-
-        // Examine the text in the response
-        return response.json().then(function(data) {
-            if (data.error || !data.notification) {
-            console.log('The API returned an error.', data.error);
-        throw new Error();
-    }
-        var title = data.notification.title;
-        var message = data.notification.message;
-        var icon = data.notification.icon;
-
-        return self.registration.showNotification(title, {
-            body: message,
-            icon: icon,
-            data: {
-                url: data.notification.url
-            }
         });
-    });
-}).catch(function(err) {
-    console.log('Unable to retrieve data', err);
-
-    var title = 'An error occurred';
-    var message = 'We were unable to get the information for this push message';
-    var icon = 'images/admin.png';
-    var notificationTag = 'notification-error';
-    return self.registration.showNotification(title, {
-        body: message,
-        icon: icon,
-        tag: notificationTag
-    });
     })
-    );
-});
-
-// The user has clicked on the notification ...
-self.addEventListener('notificationclick', function(event) {
-    console.log(event.notification.data.url);
-    event.notification.close();
-
-    event.waitUntil(
-        clients.matchAll({
-        type: "window"
-    })
-    .then(function(clientList) {
-        for (var i = 0; i < clientList.length; i++) {
-        var client = clientList[i];
-        if (client.url == '/' && 'focus' in client)
-            return client.focus();
-        }
-        if (clients.openWindow) {
-            return clients.openWindow(event.notification.data.url);
-        }
-    }));
+);
 });

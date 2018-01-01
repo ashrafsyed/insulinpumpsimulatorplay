@@ -41,16 +41,4 @@ public class Application extends Controller {
         return redirect(routes.NurseInterface.index());
     }
 
-    public Result mainJs(){
-        return Results.ok (gcm_main_js.render()).as("text/javascript");
-    }
-
-    public Result gcmManifest(){
-        return Results.ok (gcm_manifest_json.render()).as("application/json");
-    }
-
-    public Result gcmServiceWorker(){
-        response().setHeader("cache-control", "no-cache");
-        return ok (gcm_serviceworker_js.render()).as("text/javascript");
-    }
 }
