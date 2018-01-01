@@ -3,8 +3,11 @@ package controllers;
 import akka.stream.impl.fusing.Split;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import lib.CarbohydrateModule;
 import lib.InsulinModule;
+import lib.MailgunEmailGateway;
+import lib.NexmoSMS;
 import models.DeviceConfig;
 import models.Patient;
 import org.apache.commons.lang3.StringUtils;
@@ -133,6 +136,13 @@ public class Simulator extends Controller {
     public Result sos(){
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
+        NexmoSMS.sendSms("Emergency Alert! Patient need assistance", "15217158915");
+        AlertNotificationHandler.dispatchPushNotification();
+        try {
+            MailgunEmailGateway.sendSimpleMessage();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
         //TODO Need to contact emergency here
         resMap.put("status","success");
         resMap.put("message","Please do not panic. They will be here in no time.");

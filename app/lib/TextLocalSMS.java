@@ -2,35 +2,20 @@ package lib;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 public class TextLocalSMS {
-    public static final String API_KEY = "textlocal.apikey";
-    public static final String TEXTLOCAL_ENDPOINT = "textlocal.endpoint";
-
-    private final Config config;
-
-    @javax.inject.Inject
-    public TextLocalSMS(Config config) {
-        this.config = config;
-    }
-
-    public String getApiKey() {
-        if (config.hasPath(API_KEY)) {
-            return config.getString(API_KEY);
-        } else {
-            throw new ConfigException.Missing(API_KEY);
-        }
-    }
-
+    public static final String TEXTLOCAL_API_KEY = ConfigFactory.load().getString("textlocal.apikey");
+    public static final String TEXTLOCAL_ENDPOINT = ConfigFactory.load().getString("textlocal.endpoint");
 
     public static String sendSms(String message, String numbers) {
         try {
             // Construct data
-            String apiKey = "apikey=" + API_KEY;
+            String apiKey = "apikey=" + TEXTLOCAL_API_KEY;
             String sender = "&sender=" + "InsulinPump";
 //            String message = "&message=" + "Emergency! Patient's Blood Glucose Level is too high! This is Alpha Beta Insulin Pump";
 //            String numbers = "&numbers=" + "4915217500865";

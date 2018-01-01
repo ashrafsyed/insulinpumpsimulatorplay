@@ -1,76 +1,38 @@
 package lib;
 
+import com.google.gson.Gson;
+import com.typesafe.config.ConfigFactory;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
+import play.Logger;
+import play.libs.ws.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NexmoSMS {
-    public static final String END_POINT = "nexmo.endpoint";
-    public static final String API_KEY = "nexmo.apikey";
-    public static final String API_SECRET = "nexmo.apisecret";
-
-    private final Config config;
-
-    @javax.inject.Inject
-    public NexmoSMS (Config config) {
-        this.config = config;
-    }
-
-    public String getEndPoint() {
-        if (config.hasPath(END_POINT)) {
-            return config.getString(END_POINT);
-        } else {
-            throw new ConfigException.Missing(END_POINT);
-        }
-    }
-
-    public String getApiKey() {
-        if (config.hasPath(API_KEY)) {
-            return config.getString(API_KEY);
-        } else {
-            throw new ConfigException.Missing(API_KEY);
-        }
-    }
-
-    public String getApiSecret() {
-        if (config.hasPath(API_SECRET)) {
-            return config.getString(API_SECRET);
-        } else {
-            throw new ConfigException.Missing(API_SECRET);
-        }
-    }
-
+    public static final String NEXMO_END_POINT = ConfigFactory.load().getString("nexmo.endpoint");
+    public static final String NEXMO_API_KEY = ConfigFactory.load().getString("nexmo.apikey");
+    public static final String NEXMO_API_SECRET = ConfigFactory.load().getString("nexmo.apisecret");
+    public static WSClient ws = null;
 
     public static void sendSms(String message, String phoneNumber) {
         try {
             // Construct data
-            String sender = "InsulinPump";
 //            String message = "&message=" + "Emergency! Patient's Blood Glucose Level is too high! This is Alpha Beta Insulin Pump";
 //            String numbers = "&numbers=" + "4915217158915";
 
-            Map<String, String> nexmoQueryParams = new LinkedHashMap<>();
-            nexmoQueryParams.put("api_key", API_KEY);
-            nexmoQueryParams.put("api_secret", API_SECRET);
+            Map<String, Object> nexmoQueryParams = new HashMap<>();
+            nexmoQueryParams.put("api_key", NEXMO_API_KEY);
+            nexmoQueryParams.put("api_secret", NEXMO_API_SECRET);
             nexmoQueryParams.put("to", "49"+phoneNumber);
-            nexmoQueryParams.put("from", sender);
+            nexmoQueryParams.put("from", "Alpha-Beta Pump");
             nexmoQueryParams.put("text", message);
 
-            List<Pair<String, String>> extraHeaders =  new ArrayList<>();
-            Pair<String, String> pair = new MutablePair<>("Content-Type", "application/x-www-form-urlencoded");
-            extraHeaders.add(pair);
-
-            //TODO nexmo integration with post method
-/*
-            String nexmoResponse = Play.net().postValues(END_POINT, nexmoQueryParams, extraHeaders);
-            Logger.info(nexmoResponse);
-*/
-
+            String json = new Gson().toJson(nexmoQueryParams);
+            WSRequest wsRequest = ws.url(NEXMO_END_POINT).setContentType("application/x-www-form-urlencoded");
+            wsRequest.setContentType("application/json").post(json).whenComplete((wsResponse, ex) -> {
+                Logger.debug ("NexmoResponse:getBody: " + wsResponse.getBody());
+            });
 
         } catch (Exception e) {
             System.out.println("Error SMS "+e);

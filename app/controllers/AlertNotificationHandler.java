@@ -2,7 +2,9 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import models.User;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import lib.BrowserPush;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -16,15 +18,9 @@ import javax.persistence.PersistenceException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BrowserPush extends Controller {
+public class AlertNotificationHandler extends Controller {
 
-    public Result index() {
-        Gson gson = new Gson();
-        Map<String, Object> resMap = new HashMap<>();
-        User currentUser = User.byUserName("Ashraf");
-        return ok(index.render("Your new application is ready."));
-    }
-
+    /***********************Browserpush Alert Notification Code Starts*******************************/
     public Result mainJs(){
         return Results.ok (gcm_main_js.render()).as("text/javascript");
     }
@@ -78,19 +74,24 @@ public class BrowserPush extends Controller {
         response().setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
 
         Gson gson = new Gson();
-        HashMap<String, Object> res = new HashMap<>();
         HashMap<String, Object> responseData = new HashMap<String, Object>();
 
         String registrationId = request().getQueryString("registrationId");
         if (StringUtils.isNotEmpty(registrationId)){
-            responseData.put("title","Test Title");
-            responseData.put("body","Test Body");
-            responseData.put("icon","assets/images/admin.png");
+            //TODO fetch notification data from table
+            responseData.put("title","Alpha-Beta Pump Simulator");
+            responseData.put("body","Danger!! The BGL level is too high. The patient may die");
+            responseData.put("icon","assets/images/warning_sign.png");
+            responseData.put("sound","assets/misc/Alert.mp3");
             responseData.put("url","https://youtube.com");
-            res.put("data", responseData);
         }
 
-        return ok(responseData.toString()).as("application/json");
+        return ok(gson.toJson(responseData)).as("application/json");
     }
 
+    public static void dispatchPushNotification(){
+        BrowserPush.dispatchPushNotification("BEL0DKcnKmqHEl5tOTSmKh6DtXsiFU3irlEhmZGoiTqG+i4enw6oeNmE1SyhUY5XO3C5WdvARokWryFiQMaxhBw=");
+    }
+
+    /***********************Browserpush Alert Notification Code Ends*******************************/
 }
