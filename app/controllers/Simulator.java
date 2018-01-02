@@ -132,10 +132,12 @@ public class Simulator extends Controller {
     public Result sos(){
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
+
+        Patient patient = Patient.getPatient();
         NexmoSMS.sendSms("Emergency Alert! Patient need assistance", "15217158915");
         AlertNotificationHandler.dispatchPushNotification();
         SimpleEmailSender sender = new SimpleEmailSender();
-        sender.sendSimpleEmail();
+        sender.sendSimpleEmail(patient.emailId, "SOS: Patient needs assistance", "Hi, The patient needs assistance");
 
         //TODO Need to contact emergency here
         resMap.put("status","success");

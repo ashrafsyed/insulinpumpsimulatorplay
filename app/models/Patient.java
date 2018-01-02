@@ -89,5 +89,12 @@ public class Patient extends Model {
         return find.query().where().eq("deviceId",deviceId).eq("patientId",patientId).findUnique();
     }
 
-
+    public static Patient getPatient(){
+        Patient patient = null;
+        patient = find.query().where().findUnique();
+        if (null == patient){
+            return null;
+        }
+        return patient;
+    }
 }

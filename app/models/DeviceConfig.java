@@ -46,6 +46,7 @@ public class DeviceConfig extends Model {
         }
         return config;
     }
+
     public static DeviceConfig createOrUpdate (String deviceId, String patientId, String deviceMode, Double batteryLevel, Double insulinLevel,
                                                Double glucagonLevel, Double dailyMax, Double bolusMax, Double targetBgl) {
         DeviceConfig config = null;
@@ -71,5 +72,13 @@ public class DeviceConfig extends Model {
         return find.query().where().eq("deviceId",deviceId).eq("patientId",patientId).findUnique();
     }
 
+    public static DeviceConfig getDevice(){
+        DeviceConfig config = null;
+        config = find.query().where().findUnique();
+        if (null == config){
+            return null;
+        }
+        return config;
+    }
 
 }

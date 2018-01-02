@@ -21,7 +21,7 @@ public class PatientInterface extends Controller {
     public Result getDeviceConfig() {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
-        DeviceConfig config = DeviceConfig.getOrCreate();
+        DeviceConfig config = DeviceConfig.getDevice();
         if (config != null) {
             resMap.put("status", "success");
             resMap.put("deviceId", config.deviceId);

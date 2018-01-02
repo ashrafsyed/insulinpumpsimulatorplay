@@ -90,7 +90,7 @@ public class AlertNotificationHandler extends Controller {
     }
 
     public static void dispatchPushNotification(){
-        BrowserPush.dispatchPushNotification("BEL0DKcnKmqHEl5tOTSmKh6DtXsiFU3irlEhmZGoiTqG+i4enw6oeNmE1SyhUY5XO3C5WdvARokWryFiQMaxhBw=");
+        BrowserPush.dispatchPushNotification("dpW1xY6jhRE:APA91bH88a24d-m9fBl9P0UNe8K-SCUImV0xjAK8ChJRALEnkD9eig-SKZcu3Ha5g_ZwD8KoWTmL3OcPP29e84u4I39B6kVIjC-9W6na83f6bRTyupCoYWqoaQqVhLzYqkkxdfnZsBVX");
     }
 
     /***********************Browserpush Alert Notification Code Ends*******************************/

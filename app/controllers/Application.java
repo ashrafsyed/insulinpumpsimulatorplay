@@ -1,16 +1,10 @@
 package controllers;
 
 import com.google.gson.Gson;
-import lib.NexmoSMS;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
-import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Results;
-import views.html.gcm_main_js;
-import views.html.gcm_manifest_json;
-import views.html.gcm_serviceworker_js;
 import views.html.index;
 
 import java.util.HashMap;
@@ -22,7 +16,6 @@ public class Application extends Controller {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
         User currentUser = User.byUserName("Ashraf");
-        NexmoSMS.sendSms("Emergency Alert! Patient need assistance", "15217158915");
         return ok(index.render("Your new application is ready."));
     }
 

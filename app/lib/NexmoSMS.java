@@ -29,7 +29,7 @@ public class NexmoSMS {
             nexmoQueryParams.put("text", message);
 
             String json = new Gson().toJson(nexmoQueryParams);
-            WSRequest wsRequest = ws.url(NEXMO_END_POINT).setContentType("application/x-www-form-urlencoded");
+            WSRequest wsRequest = ws.url(NEXMO_END_POINT).setContentType("application/json");
             wsRequest.setContentType("application/json").post(json).whenComplete((wsResponse, ex) -> {
                 Logger.debug ("NexmoResponse:getBody: " + wsResponse.getBody());
             });
