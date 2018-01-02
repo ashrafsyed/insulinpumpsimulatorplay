@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import lib.NexmoSMS;
 import models.User;
 import org.apache.commons.lang3.StringUtils;
 import play.data.validation.Constraints;
@@ -21,6 +22,7 @@ public class Application extends Controller {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
         User currentUser = User.byUserName("Ashraf");
+        NexmoSMS.sendSms("Emergency Alert! Patient need assistance", "15217158915");
         return ok(index.render("Your new application is ready."));
     }
 

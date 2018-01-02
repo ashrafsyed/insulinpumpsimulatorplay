@@ -1,13 +1,11 @@
 package controllers;
 
-import akka.stream.impl.fusing.Split;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import lib.CarbohydrateModule;
 import lib.InsulinModule;
-import lib.MailgunEmailGateway;
 import lib.NexmoSMS;
+import lib.SimpleEmailSender;
 import models.DeviceConfig;
 import models.Patient;
 import org.apache.commons.lang3.StringUtils;
@@ -15,13 +13,11 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.commons.Enums;
 
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class Simulator extends Controller {
 
@@ -138,11 +134,9 @@ public class Simulator extends Controller {
         Map<String, Object> resMap = new HashMap<>();
         NexmoSMS.sendSms("Emergency Alert! Patient need assistance", "15217158915");
         AlertNotificationHandler.dispatchPushNotification();
-        try {
-            MailgunEmailGateway.sendSimpleMessage();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
+        SimpleEmailSender sender = new SimpleEmailSender();
+        sender.sendSimpleEmail();
+
         //TODO Need to contact emergency here
         resMap.put("status","success");
         resMap.put("message","Please do not panic. They will be here in no time.");

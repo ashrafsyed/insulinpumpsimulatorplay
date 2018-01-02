@@ -22,7 +22,8 @@ libraryDependencies ++= Seq( javaJdbc , ehcache , javaWs, guice, filters,
   "com.google.guava" % "guava" % "19.0",
   "com.google.code.gson" % "gson" % "2.8.2",
   "commons-io" % "commons-io" % "2.5",
-  "com.mashape.unirest" % "unirest-java" % "1.4.9"
+  "org.apache.commons" % "commons-email" % "1.5"
+
 
 )
 

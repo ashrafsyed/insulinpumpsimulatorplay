@@ -1,16 +1,15 @@
 package lib;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 public class TextLocalSMS {
-    public static final String TEXTLOCAL_API_KEY = ConfigFactory.load().getString("textlocal.apikey");
-    public static final String TEXTLOCAL_ENDPOINT = ConfigFactory.load().getString("textlocal.endpoint");
+    private static final String TEXTLOCAL_API_KEY = ConfigFactory.load().getString("textlocal.apikey");
+    private static final String TEXTLOCAL_ENDPOINT = ConfigFactory.load().getString("textlocal.endpoint");
 
     public static String sendSms(String message, String numbers) {
         try {
