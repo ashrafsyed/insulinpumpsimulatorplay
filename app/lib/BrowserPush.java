@@ -18,8 +18,6 @@ public class BrowserPush {
     public static final String FCM_API_KEY = ConfigFactory.load().getString("fcm.api_key");
     public static final String FCM_ENDPOINT = ConfigFactory.load().getString("fcm.end_point");
 
-    public static WSClient ws = null;
-
     public static void dispatchPushNotification(String registrationId) {
         try {
             Map<String, Object> gcmPushQueryParams = new HashMap<>();

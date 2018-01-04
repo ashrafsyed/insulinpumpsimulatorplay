@@ -47,6 +47,7 @@ self.addEventListener('push', function(event) {
                     icon: jsonData.icon,
                     vibrate: [500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500],
                     sound: jsonData.sound,
+                    image: jsonData.image,
                     url: jsonData.url
                 };
 
@@ -56,6 +57,7 @@ self.addEventListener('push', function(event) {
                     icon: payload.icon,
                     vibrate: payload.vibrate,
                     sound: payload.sound,
+                    image: payload.image,
                     tag: payload.url + payload.body + payload.icon + payload.title
                 });
             });

@@ -139,7 +139,6 @@ public class Simulator extends Controller {
         SimpleEmailSender sender = new SimpleEmailSender();
         sender.sendSimpleEmail(patient.emailId, "SOS: Patient needs assistance", "Hi, The patient needs assistance");
 
-        //TODO Need to contact emergency here
         resMap.put("status","success");
         resMap.put("message","Please do not panic. They will be here in no time.");
         return ok(gson.toJson(resMap)).as("application/json");

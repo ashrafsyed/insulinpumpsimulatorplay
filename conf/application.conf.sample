@@ -65,6 +65,10 @@ nexmo.endpoint="https://rest.nexmo.com/sms/json"
 nexmo.apikey="edff98d0"
 nexmo.apisecret="203244039e3c89fe"
 
-#GCM Push Notification
-gcm_api_key = "AAAAJ2UlyrQ:APA91bEk5JJUmriVgr611c4snT81YaRekNhBJm48Jd9j6SYGZL4AOY_nZciY4cmVp4BarjzpnYS1c8VYJdQ9yS66WsonybF_lGBw8wo9VAEC4mpxeZsV4HOcQlggtzX-Aus_hevvH1y0";
-gcm_endpoint = "https://android.googleapis.com/gcm/send";
+#FCM Push Notification
+fcm.api_key = "AAAAJ2UlyrQ:APA91bEk5JJUmriVgr611c4snT81YaRekNhBJm48Jd9j6SYGZL4AOY_nZciY4cmVp4BarjzpnYS1c8VYJdQ9yS66WsonybF_lGBw8wo9VAEC4mpxeZsV4HOcQlggtzX-Aus_hevvH1y0"
+fcm.end_point = "https://fcm.googleapis.com/fcm/send"
+
+#Gmail Account Credentials
+gmail.username="insulinglucagonpump@gmail.com"
+gmail.password="alpha1beta"

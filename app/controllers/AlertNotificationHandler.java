@@ -81,8 +81,9 @@ public class AlertNotificationHandler extends Controller {
             //TODO fetch notification data from table
             responseData.put("title","Alpha-Beta Pump Simulator");
             responseData.put("body","Danger!! The BGL level is too high. The patient may die");
-            responseData.put("icon","assets/images/warning_sign.png");
+            responseData.put("icon","assets/images/syringe.png");
             responseData.put("sound","assets/misc/Alert.mp3");
+            responseData.put("image","assets/images/warning_sign.png");
             responseData.put("url","https://youtube.com");
         }
 
@@ -90,7 +91,7 @@ public class AlertNotificationHandler extends Controller {
     }
 
     public static void dispatchPushNotification(){
-        BrowserPush.dispatchPushNotification("dpW1xY6jhRE:APA91bH88a24d-m9fBl9P0UNe8K-SCUImV0xjAK8ChJRALEnkD9eig-SKZcu3Ha5g_ZwD8KoWTmL3OcPP29e84u4I39B6kVIjC-9W6na83f6bRTyupCoYWqoaQqVhLzYqkkxdfnZsBVX");
+        BrowserPush.dispatchPushNotification("fKzm67mVNSw:APA91bFk3RowZnyobLBQuQDhtGX0_LASJhUgRC6puflxQZvljSQwdTI6qMLgwtMFjM-Uk2JXefCaQq89IvuMatbGebeWm4Fcx_bJosc5bhvDS3ZvuX8rUNTKPIwPqT9lSxBe31zRyDvK");
     }
 
     /***********************Browserpush Alert Notification Code Ends*******************************/
