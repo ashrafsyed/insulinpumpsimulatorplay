@@ -22,8 +22,8 @@ public class CodeBlockTask {
 
     private void initialize() {
         this.actorSystem.scheduler().schedule(
-                Duration.create(10, TimeUnit.SECONDS), // initialDelay
-                Duration.create(1, TimeUnit.MINUTES), // interval
+                Duration.create(1, TimeUnit.SECONDS), // initialDelay
+                Duration.create(1, TimeUnit.SECONDS), // interval
                 () -> Sensor.bglCalculator(),
                 this.executionContext
         );

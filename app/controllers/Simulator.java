@@ -2,10 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import lib.CarbohydrateModule;
-import lib.InsulinModule;
-import lib.NexmoSMS;
-import lib.SimpleEmailSender;
+import lib.*;
 import models.DeviceConfig;
 import models.Patient;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.commons.Enums;
 
+import javax.inject.Inject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Simulator extends Controller {
+    @Inject
+    SimulationContext simulationContext;
 
     public Result runSimulator() {
         Gson gson = new Gson();
@@ -142,5 +142,25 @@ public class Simulator extends Controller {
         resMap.put("status","success");
         resMap.put("message","Please do not panic. They will be here in no time.");
         return ok(gson.toJson(resMap)).as("application/json");
+    }
+
+    public void tick() {
+        if (simulationContext.started) {
+            for (int j = 0; j < simulationContext.lapseSpeed; j++) {
+                simulationContext.currentTime += 1; //
+                SimulationContext.Patient patient = simulationContext.patient;
+                double riseInBglCarb = 0.0;
+                for (SimulationContext.Meal meal: simulationContext.meals) {
+                    riseInBglCarb += CarbohydrateModule.riseInBGL(meal.carbs, meal.gI, simulationContext.currentTime, patient.glucoseSensitivity);
+                    // Insulin logic
+                    simulationContext.currentInsulin = InsulinModule.computeInsulinDose(meal.carbs, glycemicIndex[i], patient.glucoseSensitivity,
+                            startBglForIteration, config.targetBgl);
+                }
+                double bglChangeByInsulin = InsulinModule.changeInBgl(simulationContext.currentTime, simulationContext.currentInsulin, patient.weight, patient.bloodVol);
+                simulationContext.currentBgl = simulationContext.currentBgl - bglChangeByInsulin + riseInBglCarb;
+
+                System.out.println("BGL Breakfast:" + simulationContext.currentBgl + " at time: " + simulationContext.currentTime + " insulinChange " + insulinChangeInBgl + " riseCarb " + riseInBglCarb);
+            }
+        }
     }
 }
