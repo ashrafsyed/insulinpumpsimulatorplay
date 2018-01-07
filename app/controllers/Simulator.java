@@ -149,17 +149,18 @@ public class Simulator extends Controller {
             for (int j = 0; j < simulationContext.lapseSpeed; j++) {
                 simulationContext.currentTime += 1; //
                 SimulationContext.Patient patient = simulationContext.patient;
+                SimulationContext.DeviceConfig config = simulationContext.config;
                 double riseInBglCarb = 0.0;
                 for (SimulationContext.Meal meal: simulationContext.meals) {
                     riseInBglCarb += CarbohydrateModule.riseInBGL(meal.carbs, meal.gI, simulationContext.currentTime, patient.glucoseSensitivity);
                     // Insulin logic
-                    simulationContext.currentInsulin = InsulinModule.computeInsulinDose(meal.carbs, glycemicIndex[i], patient.glucoseSensitivity,
-                            startBglForIteration, config.targetBgl);
+                    simulationContext.currentInsulin = InsulinModule.computeInsulinDose(meal.carbs, meal.gI, patient.glucoseSensitivity,
+                            simulationContext.startBgl, config.targetBgl);
                 }
                 double bglChangeByInsulin = InsulinModule.changeInBgl(simulationContext.currentTime, simulationContext.currentInsulin, patient.weight, patient.bloodVol);
                 simulationContext.currentBgl = simulationContext.currentBgl - bglChangeByInsulin + riseInBglCarb;
 
-                System.out.println("BGL Breakfast:" + simulationContext.currentBgl + " at time: " + simulationContext.currentTime + " insulinChange " + insulinChangeInBgl + " riseCarb " + riseInBglCarb);
+                System.out.println("BGL Breakfast:" + simulationContext.currentBgl + " at time: " + simulationContext.currentTime + " bglChangeByInsulin " + bglChangeByInsulin + " riseCarb " + riseInBglCarb);
             }
         }
     }
