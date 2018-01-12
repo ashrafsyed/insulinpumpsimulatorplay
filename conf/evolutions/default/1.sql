@@ -55,6 +55,16 @@ create table sensor_data (
   constraint pk_sensor_data primary key (id)
 );
 
+create table simulation_log (
+  id                            bigserial not null,
+  simulation_id                 varchar(255),
+  device_id                     varchar(255),
+  patient_id                    varchar(255),
+  current_bgl                   float,
+  current_insulin               float,
+  constraint pk_simulation_log primary key (id)
+);
+
 create table user_data (
   id                            bigserial not null,
   email                         varchar(255) not null,
@@ -78,6 +88,8 @@ drop table if exists device_config cascade;
 drop table if exists patient cascade;
 
 drop table if exists sensor_data cascade;
+
+drop table if exists simulation_log cascade;
 
 drop table if exists user_data cascade;
 

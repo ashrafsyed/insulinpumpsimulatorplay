@@ -43,8 +43,19 @@ public class Simulator extends Controller {
             String deviceId = (String) data.get("deviceId");
             String patientId = (String) data.get("patientId");
             Integer duration = ((Double) data.get("duration")).intValue();
-            bglMapList = startSimulation(startBgl, carbsArray, glycemicIndexArray, deviceId, patientId, Enums.deviceMode.AUTO);
 
+            // TODO------------ Demo implmenteation ---------------- STARTS -------------------------------
+            Patient patient = Patient.byIds(deviceId, patientId);
+            simulationContext.stopSimulation();
+            simulationContext.meals.add(new SimulationContext.Meal(10, carbsArray[0], glycemicIndexArray[0]));
+            simulationContext.meals.add(new SimulationContext.Meal(20, carbsArray[1], glycemicIndexArray[1]));
+            simulationContext.meals.add(new SimulationContext.Meal(30, carbsArray[2], glycemicIndexArray[2]));
+            simulationContext.patient = new SimulationContext.Patient(patientId, deviceId,
+                    patient.patientWeight, patient.glucoseSensitivity, patient.bloodVolume);
+            simulationContext.startSimulation();
+            // TODO------------ Demo implmenteation ---------------- ENDS -------------------------------
+
+            bglMapList = startSimulation(startBgl, carbsArray, glycemicIndexArray, deviceId, patientId, Enums.deviceMode.AUTO);
             DeviceConfig config = DeviceConfig.byIds(deviceId,patientId);
 
             resMap.put("batteryStatus", config.batteryLevel);   //TODO reduce battery and insulin level after simulation execution
@@ -142,26 +153,5 @@ public class Simulator extends Controller {
         resMap.put("status","success");
         resMap.put("message","Please do not panic. They will be here in no time.");
         return ok(gson.toJson(resMap)).as("application/json");
-    }
-
-    public void tick() {
-        if (simulationContext.started) {
-            for (int j = 0; j < simulationContext.lapseSpeed; j++) {
-                simulationContext.currentTime += 1; //
-                SimulationContext.Patient patient = simulationContext.patient;
-                SimulationContext.DeviceConfig config = simulationContext.config;
-                double riseInBglCarb = 0.0;
-                for (SimulationContext.Meal meal: simulationContext.meals) {
-                    riseInBglCarb += CarbohydrateModule.riseInBGL(meal.carbs, meal.gI, simulationContext.currentTime, patient.glucoseSensitivity);
-                    // Insulin logic
-                    simulationContext.currentInsulin = InsulinModule.computeInsulinDose(meal.carbs, meal.gI, patient.glucoseSensitivity,
-                            simulationContext.startBgl, config.targetBgl);
-                }
-                double bglChangeByInsulin = InsulinModule.changeInBgl(simulationContext.currentTime, simulationContext.currentInsulin, patient.weight, patient.bloodVol);
-                simulationContext.currentBgl = simulationContext.currentBgl - bglChangeByInsulin + riseInBglCarb;
-
-                System.out.println("BGL Breakfast:" + simulationContext.currentBgl + " at time: " + simulationContext.currentTime + " bglChangeByInsulin " + bglChangeByInsulin + " riseCarb " + riseInBglCarb);
-            }
-        }
     }
 }

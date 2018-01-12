@@ -1,30 +1,35 @@
 package tasks;
 
 import akka.actor.ActorSystem;
-import com.google.inject.Inject;
+//import com.google.inject.Inject;
+import lib.RealtimeSimulator;
 import lib.Sensor;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 
+import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
-public class CodeBlockTask {
+public class SimulatorTask {
 
     private final ActorSystem actorSystem;
     private final ExecutionContext executionContext;
 
     @Inject
-    public CodeBlockTask(ActorSystem actorSystem, ExecutionContext executionContext) {
+    RealtimeSimulator realtimeSimulator;
+
+    @Inject
+    public SimulatorTask(ActorSystem actorSystem, ExecutionContext executionContext) {
         this.actorSystem = actorSystem;
         this.executionContext = executionContext;
-//        this.initialize();
+        this.initialize();
     }
 
     private void initialize() {
         this.actorSystem.scheduler().schedule(
                 Duration.create(1, TimeUnit.SECONDS), // initialDelay
                 Duration.create(1, TimeUnit.SECONDS), // interval
-                () -> Sensor.bglCalculator(),
+                () -> realtimeSimulator.tick(),
                 this.executionContext
         );
     }
