@@ -21,6 +21,7 @@ public class SimulationContext {
         public Patient(String patientId, String deviceId, double weight, double glucoseSensitivity, double bloodVol) {
             this.patientId = patientId;
             this.weight = weight;
+            this.deviceId = deviceId;
             this.glucoseSensitivity = glucoseSensitivity;
             this.bloodVol = bloodVol;
         }
