@@ -1,7 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
-import models.User;
+import models.DoctorProfiles;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -13,9 +13,6 @@ import java.util.Map;
 public class Application extends Controller {
 
     public Result index() {
-        Gson gson = new Gson();
-        Map<String, Object> resMap = new HashMap<>();
-        User currentUser = User.byUserName("Ashraf");
         return ok(index.render("Your new application is ready."));
     }
 

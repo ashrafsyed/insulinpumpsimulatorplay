@@ -2,29 +2,43 @@
 <div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h1 class="text-center">Doctor's Authentication Page</h1>
+            <div class="modal-header" align="center">
+                <img class="img-circle" style="width:20%" id="img_logo" src={{doctorLogo}}>
+                <h3 class="text-center">Doctor's Authentication Page</h3>
             </div>
             <div class="modal-body">
-                <form novalidate class="form col-md-12 center-block" role="form">
+                <form novalidate class="form-horizontal" role="form">
                     <div ng-form="doctorLoginForm">
                         <div class="form-group">
-                            <input type="text" class="form-control input-lg" ng-model="loginFormData.doctorID" placeholder="Doctor's ID Number">
+                            <label class="col-md-6 control-label">Doctor Id / Email Id</label>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control input-lg" ng-model="loginFormData.doctorID" placeholder="Doctor's ID Number">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control input-lg" ng-model="loginFormData.doctorPassword" placeholder="Password">
+                            <label class="col-md-6 control-label">Password</label>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="password" class="form-control input-lg" ng-model="loginFormData.doctorPassword" placeholder="Password">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="doctorLoginSubmit(doctorLoginForm)">Sign In</button>
-                            <span class="pull-right"><a href="#">Register</a></span>
+                            <div class="col-md-4 col-md-offset-2">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="doctorLoginSubmit(doctorLoginForm)">Sign In</button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="doctorRegister()">Register</button>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <div class="col-md-12">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <div class="modal-footer" align="center">
+                <div>
+                    <span class="label label-danger" ng-show="loginfailed">Login Failed! Please provide correct credentials.</span>
                 </div>
             </div>
         </div>
