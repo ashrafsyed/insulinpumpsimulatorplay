@@ -28,6 +28,19 @@ create table device_config (
   constraint pk_device_config primary key (id)
 );
 
+create table doctor_profiles (
+  id                            bigserial not null,
+  email                         varchar(255),
+  doctor_id                     varchar(255),
+  password                      varchar(255),
+  gender                        varchar(255),
+  mobile_number                 varchar(255),
+  first_name                    varchar(255),
+  last_name                     varchar(255),
+  last_update                   timestamptz,
+  constraint pk_doctor_profiles primary key (id)
+);
+
 create table patient (
   id                            bigserial not null,
   device_id                     varchar(255),
@@ -55,19 +68,6 @@ create table sensor_data (
   constraint pk_sensor_data primary key (id)
 );
 
-create table user_data (
-  id                            bigserial not null,
-  email                         varchar(255) not null,
-  user_type                     varchar(255),
-  user_uuid                     varchar(255),
-  first_name                    varchar(255),
-  last_name                     varchar(255),
-  sha_password                  varchar(64) not null,
-  last_update                   timestamptz,
-  constraint uq_user_data_email unique (email),
-  constraint pk_user_data primary key (id)
-);
-
 
 # --- !Downs
 
@@ -75,9 +75,9 @@ drop table if exists battery cascade;
 
 drop table if exists device_config cascade;
 
+drop table if exists doctor_profiles cascade;
+
 drop table if exists patient cascade;
 
 drop table if exists sensor_data cascade;
-
-drop table if exists user_data cascade;
 
