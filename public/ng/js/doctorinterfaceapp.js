@@ -25,7 +25,7 @@ doctorinterfaceapp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: insulinpumpapp.assetsPath + "ng/partials/doctorLogin.html",
             controller: 'DoctorLoginCtrl'
         })
-        .when('/:id', {
+        .when('/dashboard/:id', {
             templateUrl: insulinpumpapp.assetsPath + 'ng/partials/dashboard.html',
             controller: 'DoctorPanelCtrl'
           })
@@ -46,22 +46,22 @@ doctorinterfaceapp.config(['$routeProvider', function ($routeProvider) {
 doctorinterfaceapp.controller('DoctorLoginCtrl',['$scope','$http', '$log','$timeout','$location', '$route', function ($scope, $http, $log, $timeout, $location, $route) {
 
     $scope.doctorLogo = insulinpumpapp.assetsPath + "images/doctor.png";
-    $scope.loginfailed = false;
     $scope.loginFormData = {
         doctorID : "",
         doctorPassword : ""
     }
 
     $scope.doctorLoginSubmit = function(form){
+        $scope.loginfailed = false;
         if (form.$valid){
             console.log($scope.loginFormData.doctorID);
             var getDeviceDataUrl = "/rest/v1/doctorinterface/doctorlogin?doctorId="+ $scope.loginFormData.doctorID + "&password=" + $scope.loginFormData.doctorPassword ;
             $http.get(getDeviceDataUrl).success(function(response) {
                 if (response.status == "success") {
-                    $location.url("/"+response.doctorId);
+                    $location.url("/dashboard/"+response.doctorId);
                     $route.reload();
                 } else {
-                    $scope.loginfailed = true
+                    $scope.loginfailed = true;
                 }
 
             })
@@ -75,7 +75,7 @@ doctorinterfaceapp.controller('DoctorLoginCtrl',['$scope','$http', '$log','$time
 }]);
 
 doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
-    $scope.doctorId = window.location.hash.split("/")[1];
+    $scope.doctorId = window.location.hash.split("/")[2];
     $scope.doctorName = "";
     $scope.selectedLink = "";
 
@@ -92,7 +92,7 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
 
 doctorinterfaceapp.controller('DoctorRegistrationCtrl',['$scope','$http', '$log','$timeout','$cookieStore', '$location', '$route', function ($scope, $http, $log, $timeout, $cookieStore, $location, $route) {
 
-    $scope.reset = function(){
+    $scope.resetForm = function(){
         $scope.formdata = {
             doctorFirstName: "",
             doctorLastName: "",
@@ -145,5 +145,5 @@ doctorinterfaceapp.controller('DoctorRegistrationCtrl',['$scope','$http', '$log'
         }
     }
 
-    $scope.reset();
+    $scope.resetForm();
 }]);
