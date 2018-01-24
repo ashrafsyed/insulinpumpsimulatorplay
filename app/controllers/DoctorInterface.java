@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import models.DoctorProfiles;
 import models.Patient;
+import models.PatientList;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.doctor_interface_index;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DoctorInterface extends Controller {
@@ -87,6 +90,36 @@ public class DoctorInterface extends Controller {
                 resMap.put("status", "error");
                 return ok(gson.toJson(resMap)).as("application/json");
             }
+        } else {
+            resMap.put("status", "error");
+            return ok(gson.toJson(resMap)).as("application/json");
+        }
+
+    }
+    public Result getPatientList (){
+        Gson gson = new Gson();
+        Map<String, Object> resMap = new HashMap<>();
+        List<Map<String, String>> responsePatientList = new ArrayList<>();
+
+        String doctorId = request().getQueryString("doctorId");
+
+        if (StringUtils.isNotEmpty(doctorId)){
+            List<PatientList> patientLists = PatientList.byDoctorId(doctorId);
+            for (PatientList patient: patientLists){
+                Map<String, String> patientMap = new HashMap<>();
+                patientMap.put("patientFirstName", patient.patientFirstName);
+                patientMap.put("patientLastName", patient.patientLastName);
+                patientMap.put("patientGender", patient.patientGender);
+                patientMap.put("patientGender", patient.patientGender);
+                patientMap.put("patientAge", String.valueOf(patient.patientAge));
+                patientMap.put("patientEmailId", patient.patientEmailId);
+                patientMap.put("patientMobileNumber", patient.patientMobileNumber);
+                responsePatientList.add(patientMap);
+            }
+
+            resMap.put("patientList", responsePatientList);
+            resMap.put("status", "success");
+            return ok(gson.toJson(resMap)).as("application/json");
         } else {
             resMap.put("status", "error");
             return ok(gson.toJson(resMap)).as("application/json");

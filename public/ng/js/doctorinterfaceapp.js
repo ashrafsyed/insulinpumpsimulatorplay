@@ -78,6 +78,8 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
     $scope.doctorId = window.location.hash.split("/")[2];
     $scope.doctorName = "";
     $scope.selectedLink = "";
+    $scope.patientList = [];
+    $scope.totalPatient = 0;
 
     var getDeviceDataUrl = "/rest/v1/doctorinterface/fetchdoctorprofile?doctorId="+ $scope.doctorId;
     $http.get(getDeviceDataUrl).success(function(response) {
@@ -87,7 +89,30 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
 
     })
 
-    console.log("I am the doctor");
+    $scope.getPatientList = function () {
+        var getPatientList = "/rest/v1/doctorinterface/getpatientlist?doctorId="+ $scope.doctorId;
+        $http.get(getPatientList).success(function(response) {
+            if (response.status == "success") {
+                if (response.patientList.length == 0){
+                    console.log("Currently no patient has been added under you.")
+                } else{
+                    $scope.patientList = response.patientList;
+                    $scope.totalPatient = response.patientList.count;
+                }
+
+                $scope.doctorName = response.doctorName;
+            }
+
+        })
+    }
+    $scope.linkClicked = function (linkName){
+        console.log (linkName);
+        if (linkName === "patientList"){
+            $scope.getPatientList();
+        }
+        $scope.selectedLink = linkName;
+    }
+
 }]);
 
 doctorinterfaceapp.controller('DoctorRegistrationCtrl',['$scope','$http', '$log','$timeout','$cookieStore', '$location', '$route', function ($scope, $http, $log, $timeout, $cookieStore, $location, $route) {
