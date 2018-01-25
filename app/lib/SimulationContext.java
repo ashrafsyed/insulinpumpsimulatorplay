@@ -46,8 +46,8 @@ public class SimulationContext {
 
     public String simulationId;
     public final int maxSafeBgl = 200; //Change these
-    public final int targetBgl = 20;  // These too
-    public final int minSafeBgl = 20;  // These too
+    public final int targetBgl = 120;  // These too
+    public final int minSafeBgl = 70;  // These too
     public final int insulinShotInterval = 20;  // These too
 
     public boolean started;

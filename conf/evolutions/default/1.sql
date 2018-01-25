@@ -75,6 +75,7 @@ create table simulation_log (
   patient_id                    varchar(255),
   current_bgl                   float,
   current_insulin               float,
+  current_tick                  integer,
   constraint pk_simulation_log primary key (id)
 );
 

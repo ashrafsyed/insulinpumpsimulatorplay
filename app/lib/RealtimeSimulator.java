@@ -53,7 +53,7 @@ public class RealtimeSimulator {
                 simulationContext.currentBgl = simulationContext.currentBgl - bglChangeByInsulin + riseInBglCarb;
 
                 SimulationLog.createLog(simulationContext.simulationId, simulationContext.patient.deviceId,
-                        simulationContext.patient.patientId, simulationContext.currentBgl, simulationContext.currentInsulin);
+                        simulationContext.patient.patientId, simulationContext.currentBgl, simulationContext.currentInsulin, simulationContext.currentTime);
 
                 System.out.println("BGL Breakfast:" + simulationContext.currentBgl + " at time: " + simulationContext.currentTime + " bglChangeByInsulin " + bglChangeByInsulin + " riseCarb " + riseInBglCarb);
             }
