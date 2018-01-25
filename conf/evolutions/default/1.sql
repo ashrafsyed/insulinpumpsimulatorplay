@@ -59,6 +59,21 @@ create table patient (
   constraint pk_patient primary key (id)
 );
 
+create table patient_list (
+  id                            bigserial not null,
+  doctor_id                     varchar(255),
+  device_id                     varchar(255),
+  patient_id                    varchar(255),
+  patient_first_name            varchar(255),
+  patient_last_name             varchar(255),
+  patient_gender                varchar(255),
+  patient_age                   integer,
+  patient_email_id              varchar(255),
+  patient_mobile_number         varchar(255),
+  last_update                   timestamptz,
+  constraint pk_patient_list primary key (id)
+);
+
 create table sensor_data (
   id                            bigserial not null,
   device_id                     bigint,
@@ -78,6 +93,8 @@ drop table if exists device_config cascade;
 drop table if exists doctor_profiles cascade;
 
 drop table if exists patient cascade;
+
+drop table if exists patient_list cascade;
 
 drop table if exists sensor_data cascade;
 

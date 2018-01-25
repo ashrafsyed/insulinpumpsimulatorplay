@@ -143,6 +143,7 @@ public class AdminInterface extends Controller {
                 dataMap.put("deviceMode", config.deviceMode);
                 dataMap.put("bolusMax", config.bolusMax);
                 dataMap.put("dailyMax", config.dailyMax);
+                dataMap.put("targetBgl", config.targetBgl);
                 resMap.put("data", dataMap);
             }
             resMap.put("status", "success");

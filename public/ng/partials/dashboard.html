@@ -31,8 +31,9 @@
             <ul class="nav nav-stacked">
                     <ul class="nav nav-stacked collapse in" id="userMenu" ng-model="selectedLink">
                         <li class="active"> <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a></li>
-                        <li><a href="#"><i class="glyphicon glyphicon-envelope"></i> Messages <span class="badge badge-info">4</span></a></li>
-                        <li><a href="#" ng-click="linkClicked('doctorProfile')"><i class="glyphicon glyphicon-cog"></i> Profile</a></li>
+                        <li><a href=""><i class="glyphicon glyphicon-envelope"></i> Messages <span class="badge badge-info">4</span></a></li>
+                        <li><a href="" ng-click="linkClicked('doctorProfile')"><i class="glyphicon glyphicon-cog"></i> Profile</a></li>
+                        <li><a href="" ng-click="linkClicked('addPatient')"><i class="glyphicon glyphicon-user"></i> Add Patient</a></li>
                         <li><a href="" ng-click="linkClicked('patientList')"><i class="glyphicon glyphicon-user"></i> Patient List</a></li>
                         <li><a href="/interface/doctor/#/"><i class="glyphicon glyphicon-off"></i> Logout</a></li>
                     </ul>
@@ -47,43 +48,56 @@
 
             <div class="row" data-ng-if="selectedLink == 'patientList'">
                 <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Patient Id</th>
-                                <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>patient 1</td>
-                                <td>123456</td>
-                                <td>1st Jan 2018</td>
-                            </tr>
-                            <tr>
-                                <td>patient 2</td>
-                                <td>232321</td>
-                                <td>10th Jan 2018</td>
-                            </tr>
-                            <tr>
-                                <td>patient 3</td>
-                                <td>384728</td>
-                                <td>14th Jan 2018</td>
-                            </tr>
-                            <tr>
-                                <td>..</td>
-                                <td>..</td>
-                                <td>..</td>
-                            </tr>
-                            <tr>
-                                <td>..</td>
-                                <td>..</td>
-                                <td>..</td>
-                            </tr>
-                            </tbody>
-                        </table>
+
+                    <div data-ng-if="patientList.length==0">
+                        <label>Your patientlist is empty. Use Add Patient link to add a patient.</label>
+                    </div>
+                    <div data-ng-if="patientList.length>0">
+                        <div class="table-responsive">
+                            <table bgcolor="#f5f5dc" border="4" cellpadding="2" class="table table-hover table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Patient Gender</th>
+                                    <th>Age</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="patient in patientList">
+                                    <td>{{patient.patientLastName}} , {{patient.patientFirstName}}</td>
+                                    <td>{{patient.patientGender}}</td>
+                                    <td>{{patient.patientAge}} years</td>
+                                    <td>
+                                        <ul class="list-inline">
+                                            <li><a href="javascript:void(0)"  data-ng-click="viewPatientRecord(patient.patientId, patient.deviceId)"  uib-tooltip="View Patient Record"><i class="fa fa-user-o" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>Dummy Patient1</td>
+                                    <td>MALE</td>
+                                    <td>42 years</td>
+                                    <td>
+                                        <ul class="list-inline">
+                                            <li><a href="javascript:void(0)"  data-ng-click="viewPatientRecord(dummy)"  uib-tooltip="View Patient Record"><i class="fa fa-user-o" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Dummy Patient2</td>
+                                    <td>FEMALE</td>
+                                    <td>62 years</td>
+                                    <td>
+                                        <ul class="list-inline">
+                                            <li><a href="javascript:void(0)"  data-ng-click="viewPatientRecord(dummy)"  uib-tooltip="View Patient Record"><i class="fa fa-user-o" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>
@@ -98,23 +112,9 @@
 </div>
 <!-- /Main -->
 
-<div class="modal" id="addWidgetModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Add Widget</h4>
-            </div>
-            <div class="modal-body">
-                <p>Add a widget stuff here..</p>
-            </div>
-            <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn">Close</a>
-                <a href="#" class="btn btn-primary">Save changes</a>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dalog -->
-</div>
-<!-- /.modal -->
+
+<modal title="Login form" visible="showModal">
+    <form role="form">
+
+    </form>
+</modal>

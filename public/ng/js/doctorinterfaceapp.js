@@ -74,7 +74,7 @@ doctorinterfaceapp.controller('DoctorLoginCtrl',['$scope','$http', '$log','$time
     }
 }]);
 
-doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
+doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$timeout','$cookieStore', '$uibModal', function ($scope, $http, $log, $timeout, $cookieStore, $uibModal) {
     $scope.doctorId = window.location.hash.split("/")[2];
     $scope.doctorName = "";
     $scope.selectedLink = "";
@@ -94,6 +94,7 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
         $http.get(getPatientList).success(function(response) {
             if (response.status == "success") {
                 if (response.patientList.length == 0){
+                    $scope.totalPatient = response.patientList.count;
                     console.log("Currently no patient has been added under you.")
                 } else{
                     $scope.patientList = response.patientList;
@@ -105,14 +106,121 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
 
         })
     }
+
     $scope.linkClicked = function (linkName){
         console.log (linkName);
         if (linkName === "patientList"){
             $scope.getPatientList();
+        } else if (linkName === 'addPatient'){
+            swal({
+                    title: 'Patient Data Form',
+                    html:
+                    '<div class="form-group"><label class="col-md-4 control-label">Patient Id</label><div class="col-md-offset-1 col-md-6"><input id="patientId" type="text" class="form-control" name="patientId" ng-required></div></div>' +
+                    '<div class="form-group"><label class="col-md-4 control-label">Device Id</label><div class="col-md-offset-1 col-md-6"><input id="deviceId" type="text" class="form-control" name="deviceId" ng-required></div></div>',
+                    focusConfirm: false,
+                    preConfirm:()=>{
+                    return[
+                        $('#patientId').val(),
+                        $('#deviceId').val()
+                    ]
+                }
+            }).then(function (result){
+                var addPatientUrl = "/rest/v1/doctorinterface/addpatient?doctorId="+ $scope.doctorId + "&patientId=" + result.value[0] + "&deviceId=" + result.value[1];
+                $http.get(addPatientUrl).success(function(response) {
+                    if (response.status == "success") {
+                        swal({
+                            title: "Patient added!",
+                            type: "success",
+                            text: "Patient added in your List successfully!!",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+
+                    }else {
+                        swal({
+                            title: "Sorry",
+                            type: "error",
+                            text: "Patient addition failed!!",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                })
+            }).catch(swal.noop)
         }
         $scope.selectedLink = linkName;
     }
+    
+    $scope.viewPatientRecord = function (patId, devId) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: insulinpumpapp.assetsPath + 'ng/partials/patientRecord.html',
+            controller: 'PatientRecordCtrl',
+            controllerAs: '$scope',
+            size: 'lg',
+            windowClass: 'right',
+            resolve: {
+                patientData: function () {
+                    return {patientId: patId, deviceId: devId};
+                }
+            }
+        });
+        modalInstance.result.then(function (formData) {
+            if (index>=0) {
+                $scope.formData.actions[index] = formData;
+            } else {
+                $scope.formData.actions.push(formData);
+            }
+        }, function () {
+            console.log("action Modal result promise rejected");
+        });
 
+/*
+        $uibModal.open({
+            templateUrl: insulinpumpapp.assetsPath + "ng/partials/patientRecord.html",
+            controller: function ($scope, $uibModalInstance) {
+                $scope.ok = function () {
+                    $uibModalInstance.close();
+                };
+
+                $scope.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            }
+        })
+*/
+    }
+
+}]);
+
+doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$timeout', '$route', '$uibModalInstance', 'patientData', function ($scope, $http, $log, $timeout, $route, $uibModalInstance, patientData) {
+
+    $scope.patientId = patientData.patientId;
+    $scope.patientName = "";
+    $scope.deviceId = patientData.deviceId;
+
+    $scope.getPatientData = function() {
+        if ($scope.deviceId != "" && $scope.patientId != "") {
+            var getPatientDataUrl = "/rest/v1/admininterface/getpatientdata?patientId=" + $scope.patientId + "&deviceId=" + $scope.deviceId;
+            $http.get(getPatientDataUrl).success(function (response) {
+                if (response.status == "success" && response.hasOwnProperty("data")) {
+                    $scope.patientFormData = {
+                        patientFirstName: response.data.firstName,
+                        patientLastName: response.data.lastName,
+                        patientGender: response.data.gender,
+                        patientHeight: response.data.height,
+                        patientWeight: response.data.weight,
+                        patientAge: response.data.age,
+                        emergencyContactEmail: response.data.email,
+                        emergencyContactMobile: response.data.mobile
+                    }
+                    $scope.patientName = response.data.firstName;
+                }
+            })
+        }
+    }
+
+    $scope.getPatientData();
 }]);
 
 doctorinterfaceapp.controller('DoctorRegistrationCtrl',['$scope','$http', '$log','$timeout','$cookieStore', '$location', '$route', function ($scope, $http, $log, $timeout, $cookieStore, $location, $route) {

@@ -65,7 +65,7 @@ public class DoctorProfiles extends Model {
         return doctor;
     }
 
-    public static DoctorProfiles byId(Long doctorId){
+    public static DoctorProfiles byProfileId(Long doctorId){
         DoctorProfiles doctor = null;
         doctor = find.query().where().eq("id",doctorId).findUnique();
         return doctor;

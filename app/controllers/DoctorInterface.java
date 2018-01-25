@@ -81,7 +81,7 @@ public class DoctorInterface extends Controller {
         String doctorId = request().getQueryString("doctorId");
 
         if (StringUtils.isNotEmpty(doctorId)){
-            DoctorProfiles doctorProfiles = DoctorProfiles.byId(Long.parseLong(doctorId));
+            DoctorProfiles doctorProfiles = DoctorProfiles.byProfileId(Long.parseLong(doctorId));
             if (null != doctorProfiles) {
                 resMap.put("status", "success");
                 resMap.put("doctorName", doctorProfiles.lastName);
@@ -96,6 +96,7 @@ public class DoctorInterface extends Controller {
         }
 
     }
+
     public Result getPatientList (){
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
@@ -104,9 +105,12 @@ public class DoctorInterface extends Controller {
         String doctorId = request().getQueryString("doctorId");
 
         if (StringUtils.isNotEmpty(doctorId)){
-            List<PatientList> patientLists = PatientList.byDoctorId(doctorId);
+            DoctorProfiles profile = DoctorProfiles.byProfileId(Long.parseLong(doctorId));
+            List<PatientList> patientLists = PatientList.byDoctorId(profile.doctorId);
             for (PatientList patient: patientLists){
                 Map<String, String> patientMap = new HashMap<>();
+                patientMap.put("patientId", patient.patientId);
+                patientMap.put("deviceId", patient.deviceId);
                 patientMap.put("patientFirstName", patient.patientFirstName);
                 patientMap.put("patientLastName", patient.patientLastName);
                 patientMap.put("patientGender", patient.patientGender);
@@ -126,4 +130,34 @@ public class DoctorInterface extends Controller {
         }
 
     }
+
+    public Result addPatient (){
+        Gson gson = new Gson();
+        Map<String, Object> resMap = new HashMap<>();
+
+        String doctorId = request().getQueryString("doctorId");
+        String patientId = request().getQueryString("patientId");
+        String deviceId = request().getQueryString("deviceId");
+
+        if (StringUtils.isNotEmpty(doctorId) && StringUtils.isNotEmpty(patientId) && StringUtils.isNotEmpty(deviceId)){
+            Patient patient = Patient.byIds(deviceId, patientId);
+            DoctorProfiles doctorProfiles = DoctorProfiles.byProfileId(Long.parseLong(doctorId));
+            PatientList addPatient = PatientList.createOrUpdatePatientData(doctorProfiles.doctorId, deviceId, patientId, patient.patientFirstName, patient.patientLastName,
+                    patient.patientGender, patient.emailId, patient.mobileNumber, patient.patientAge, patient.patientHeight, patient.patientWeight);
+
+            if (null != addPatient) {
+                resMap.put("status", "success");
+                return ok(gson.toJson(resMap)).as("application/json");
+            } else {
+                resMap.put("status", "error");
+                return ok(gson.toJson(resMap)).as("application/json");
+            }
+        } else {
+            resMap.put("status", "error");
+            return ok(gson.toJson(resMap)).as("application/json");
+        }
+
+    }
+
+
 }

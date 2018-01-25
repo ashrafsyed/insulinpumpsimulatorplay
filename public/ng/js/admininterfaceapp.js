@@ -143,7 +143,8 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                             glucagonLevel: response.data.glucagon,
                             deviceMode: response.data.deviceMode,
                             bolusMax: response.data.bolusMax,
-                            dailyMax:response.data.dailyMax
+                            dailyMax:response.data.dailyMax,
+                            targetBgl:response.data.targetBgl
                         }
                     }
                 })
@@ -200,9 +201,8 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     swal({
                         title: "Saved",
                         type: "success",
-                        text: "Patient Data Saved Successfully!!",
-                        timer: 2000,
-                        showConfirmButton: false
+                        text: "Please send your device_id = " + result.deviceId + " and \n patient_id " + result.patientId + "to your doctor.",
+                        showConfirmButton: true
                     });
                     $scope.formSelected = {
                         patientProfile: false,
@@ -246,10 +246,10 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     swal({
                         title: "Saved",
                         type: "success",
-                        text: "Configuration Saved Successfully!!",
-                        timer: 2000,
-                        showConfirmButton: false
+                        text: "Please send your device_id = " + result.deviceId + " and \n patient_id " + result.patientId + "to your doctor.",
+                        showConfirmButton: true
                     });
+
                     $scope.formSelected = {
                         patientProfile: false,
                         deviceConfig:false
