@@ -85,8 +85,8 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     })
                 },
                 allowOutsideClick: false
-            }).then((result) => {
-                if (result.value) {
+            }).then((result)=>{
+                if (result.value){
                     var url = '/rest/v1/admininterface/authorize?adminpin=' + result.value;
                     $http.get(url).success(function(response) {
                         if (response.status == "success") {

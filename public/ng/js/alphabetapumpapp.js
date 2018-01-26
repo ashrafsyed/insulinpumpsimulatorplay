@@ -150,7 +150,7 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
         },
         yAxis: {
             title: {
-                text: 'Blood Glucose Level'
+                text: 'Blood Glucose Level (mg/DL)'
             },
             min: 0,
             tickAmount: 8,

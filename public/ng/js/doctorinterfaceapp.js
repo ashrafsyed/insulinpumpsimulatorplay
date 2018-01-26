@@ -204,6 +204,32 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
         });
     }
 
+    $scope.removePatient = function (patId, devId) {
+        var removePatientUrl = "/rest/v1/doctorinterface/removepatient?doctorId="+ $scope.doctorId + "&patientId=" + patId + "&deviceId=" + devId;
+        swal({title: "Are you sure?",
+                text: "You will not be able to undo!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",   //previous value #55ACEE
+                confirmButtonText: "Yes, delete it!"
+        }).then((result)=>{
+            if (result.value){
+                $http.delete(removePatientUrl).success(function(response) {
+                    if (response.status === "success"){
+                        swal({
+                            title: "Removed",
+                            type: "success",
+                            text: "Patient removed from your list successfully!",
+                            showConfirmButton: true
+                        });
+                    }else if(response.status == "error"){
+                        swal("Oops !", "Could not remove the patient due to some error!", "error");
+                    }
+                })
+            }
+        })
+    }
+
 }]);
 
 doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$timeout', '$route', '$uibModalInstance', 'patientData', function ($scope, $http, $log, $timeout, $route, $uibModalInstance, patientData) {
@@ -226,6 +252,9 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
         dailyMax: "",
         hba1c: ""
     };
+
+    var date1 = new Date();
+    var date2 = new Date();
 
     $scope.savePatientData = function (targetBgl, dailyMax, bolusMax) {
         console.log(targetBgl, dailyMax, bolusMax);
@@ -253,20 +282,7 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
             borderColor: '#EBBA95',
             borderWidth: 2,
             borderRadius: 20,
-            animation: Highcharts.svg, // don't animate in old IE
             marginRight: 10,
-            events: {
-                load: function () {
-
-                    // set up the updating of the chart each second
-                    var series = this.series[0];
-                    setInterval(function () {
-                        var x = (new Date()).getTime(), // current time
-                            y = Math.random();
-                        series.addPoint([x, y], true, true);
-                    }, 1000);
-                }
-            }
         },
         title: {
             text: 'Patient Sugar Level (Last 2 Weeks)'
@@ -276,11 +292,12 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
         },
         xAxis: {
             type: 'datetime',
-            tickPixelInterval: 150
+            title: {text: 'Last 2 Weeks BGL'},
+            dateTimeLabelFormats: {day: '%e of %b'}
         },
         yAxis: {
             title: {
-                text: 'Blood Glucose Level'
+                text: 'Blood Glucose Level (mg/DL)'
             },
             plotLines: [{
                 value: 50,
@@ -312,7 +329,7 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
         tooltip: {
             formatter: function () {
                 return '<b>' + this.series.name + '</b><br/>' +
-                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.dateFormat('%e of %b', this.x) + '<br/>' +
                     Highcharts.numberFormat(this.y, 2);
             }
         },
@@ -323,22 +340,18 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
             enabled: false
         },
         series: [{
-            name: 'Blood Sugar Level',
-            data: (function () {
-                // generate an array of random data
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-
-                for (i = -19; i <= 0; i += 1) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: Math.random()
-                    });
-                }
-                return data;
-            }())
-        }]
+                name: 'BglMaxSeries',
+                pointInterval: 24 * 3600 * 1000, // one day
+                pointStart: (date1.getDate() - 7),
+                data: [176, 102, 110, 170, 180, 120, 105, 98, 200, 140, 150, 199, 230, 130]
+            },
+            {
+                name: 'BglMinSeries',
+                pointInterval: 24 * 3600 * 1000, // one day
+                pointStart: (date2.getDate() - 7),
+                data: [105, 82, 60, 60, 80, 70, 85, 78, 70, 140, 90, 99, 130, 130]
+            }
+        ]
     };
 
     /*Highchart Code*/

@@ -159,5 +159,30 @@ public class DoctorInterface extends Controller {
 
     }
 
+    public Result removePatient (){
+        Gson gson = new Gson();
+        Map<String, Object> resMap = new HashMap<>();
+
+        String doctorId = request().getQueryString("doctorId");
+        String patientId = request().getQueryString("patientId");
+        String deviceId = request().getQueryString("deviceId");
+
+        if (StringUtils.isNotEmpty(doctorId) && StringUtils.isNotEmpty(patientId) && StringUtils.isNotEmpty(deviceId)){
+            Patient patient = Patient.byIds(deviceId, patientId);
+            Boolean patientRemoved = PatientList.removePatient(deviceId, patientId);
+            if (patientRemoved) {
+                resMap.put("status", "success");
+                return ok(gson.toJson(resMap)).as("application/json");
+            } else {
+                resMap.put("status", "error");
+                return ok(gson.toJson(resMap)).as("application/json");
+            }
+        } else {
+            resMap.put("status", "error");
+            return ok(gson.toJson(resMap)).as("application/json");
+        }
+
+    }
+
 
 }

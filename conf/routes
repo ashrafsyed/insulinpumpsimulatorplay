@@ -19,6 +19,7 @@ GET             /rest/v1/doctorinterface/doctorlogin             controllers.Doc
 GET             /rest/v1/doctorinterface/fetchdoctorprofile      controllers.DoctorInterface.fetchDoctorProfile
 GET             /rest/v1/doctorinterface/getpatientlist          controllers.DoctorInterface.getPatientList
 GET             /rest/v1/doctorinterface/addpatient              controllers.DoctorInterface.addPatient
+DELETE          /rest/v1/doctorinterface/removepatient           controllers.DoctorInterface.removePatient
 
 
 # Admin Interface

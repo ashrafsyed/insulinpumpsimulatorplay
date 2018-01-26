@@ -76,6 +76,16 @@ public class PatientList extends Model {
         return find.query().where().eq("deviceId",deviceId).eq("patientId",patientId).findUnique();
     }
 
+    public static boolean removePatient(String deviceId, String patientId){
+        PatientList patientList = find.query().where().eq("deviceId",deviceId).eq("patientId",patientId).findUnique();
+        if (null != patientList) {
+            patientList.delete();
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     public static List<PatientList> byDoctorId(String doctorId){
         return find.query().where().eq("doctorId", doctorId).findList();
     }
