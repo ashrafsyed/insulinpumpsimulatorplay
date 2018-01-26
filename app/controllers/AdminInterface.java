@@ -12,6 +12,7 @@ import views.html.admin_interface_index;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class AdminInterface extends Controller {
 
@@ -103,11 +104,14 @@ public class AdminInterface extends Controller {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
         Map<String, Object> dataMap = new HashMap<>();
+        Random rand = new Random();
+        int hba1c = 34 + rand.nextInt((46 - 34) + 1);
 
         String deviceId = request().getQueryString("deviceId");
         String patientId = request().getQueryString("patientId");
         if (StringUtils.isNotEmpty(deviceId) && StringUtils.isNotEmpty(patientId)){
             Patient patient = Patient.byIds(deviceId, patientId);
+            DeviceConfig config = DeviceConfig.byIds(deviceId, patientId);
             if (null != patient){
                 dataMap.put("firstName", patient.patientFirstName);
                 dataMap.put("lastName", patient.patientLastName);
@@ -117,6 +121,11 @@ public class AdminInterface extends Controller {
                 dataMap.put("age", patient.patientAge);
                 dataMap.put("height", patient.patientHeight);
                 dataMap.put("weight", patient.patientWeight);
+                dataMap.put("bolusMax", config.bolusMax);
+                dataMap.put("dailyMax", config.dailyMax);
+                dataMap.put("targetBgl", config.targetBgl);
+                dataMap.put("deviceMode", config.deviceMode);
+                dataMap.put("hba1c", hba1c);
                 resMap.put("data", dataMap);
             }
             resMap.put("status", "success");

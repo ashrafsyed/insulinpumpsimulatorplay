@@ -1,92 +1,88 @@
 <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">{{patientName}}</h3>
+    <h3 class="modal-title" id="modal-title" align="center">Patient Record: {{patientName}}</h3>
 </div>
 <form novalidate class="form-horizontal" role="form">
     <div ng-form="patientProfileForm">
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">First Name</label>
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="patientFirstName" ng-model="patientFormData.patientFirstName" ng-maxlength="250">
+        <div col-md-8>
+
+            <div class="table-responsive">
+                <table bgcolor="#f5f5dc" border="4" cellpadding="2" class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Height</th>
+                        <th>Weight</th>
+                        <th>Emergency Contact</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{patient.patientLastName}} , {{patient.patientFirstName}}</td>
+                        <td>{{patient.patientGender}}</td>
+                        <td>{{patient.patientAge}} years</td>
+                        <td>{{patient.patientHeight}} cms</td>
+                        <td>{{patient.patientWeight}} kgs</td>
+                        <td>{{patient.emergencyContactEmail}} / {{patient.emergencyContactMobile}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-responsive">
+                <table bgcolor="#f5f5dc" border="4" cellpadding="2" class="table table-hover table-striped">
+
+                    <thead>
+                    <tr>
+                        <th>Hemoglobin A1c (HbA1c)</th>
+                        <th>Target BGL</th>
+                        <th>Daily Max</th>
+                        <th>Bolus Max</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{patient.hba1c}} mmol/mol</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="targetBgl" ng-model="patient.targetBgl" value="{{patient.targetBgl}}">
+                                <span class="input-group-addon">mg/dL</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="dailyMax" ng-model="patient.dailyMax" value="{{patient.dailyMax}}">
+                                <span class="input-group-addon">IU</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="bolusMax" ng-model="patient.bolusMax" value="{{patient.bolusMax}}">
+                                <span class="input-group-addon">IU</span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Last Name</label>
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="patientLastName" ng-model="patientFormData.patientLastName" ng-maxlength="250" ng-required>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Patient Gender</label>
-            <div class="col-md-8">
-                <div class="radio radio-inline">
-                    <input type="radio" ng-model="patientFormData.patientGender" id="MALE" name="patientGender" value="MALE">
-                    <label for="MALE">Male</label>
-                </div>
-                <div class="radio radio-inline">
-                    <input id="FEMALE" type="radio" ng-model="patientFormData.patientGender" name="patientGender" value="FEMALE">
-                    <label for="FEMALE">Female</label>
-                </div>
-                <div class="col-md-12">
-                    <span class="help-block text-danger" ng-show="showErrMsg && patientProfileForm.patientGender.$error.required">Select the Gender</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Age</label>
-            <div class="col-md-2">
-                <div class="input-group">
-                    <input type="number" class="form-control" name="patientAge" ng-model="patientFormData.patientAge" min="1" required>
-                    <span class="input-group-addon">Years</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Height</label>
-            <div class="col-md-2">
-                <div class="input-group">
-                    <input type="number" class="form-control" name="patientHeight" ng-model="patientFormData.patientHeight" min="1" required>
-                    <span class="input-group-addon">cms</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Weight</label>
-            <div class="col-md-2">
-                <div class="input-group">
-                    <input type="number" class="form-control" name="patientWeight" ng-model="patientFormData.patientWeight" min="1" required>
-                    <span class="input-group-addon">Kgs</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Emergency Contact</label>
-            <div class="col-md-2">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                    <input type="email" class="form-control" name="emergencyContactEmail" placeholder="email id" ng-model="patientFormData.emergencyContactEmail" ng-maxlength="250">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-mobile" aria-hidden="true"></i></span>
-                    <input type="text" class="form-control" name="emergencyContactMobile" placeholder="mobile number" ng-model="patientFormData.emergencyContactMobile" ng-maxlength="12">
-                </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div id="bglchart">Placeholder for chart</div>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-6" style="margin-left: 45%">
-                <button type="submit" class="btn btn-info" ng-click="resetForm(patientProfileForm)"><span class="fa fa-eject" aria-hidden="true"></span> Reset</button>
-                <button type="submit" class="btn btn-success" ng-click="savePatientData(patientProfileForm)">Save/Update</button>
+                <button type="submit" class="btn btn-success" ng-click="savePatientData(patient.targetBgl, patient.dailyMax, patient.bolusMax)">Save/Update</button>
             </div>
         </div>
+
 
     </div>
 </form>

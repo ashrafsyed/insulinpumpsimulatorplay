@@ -87,7 +87,7 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
             $scope.doctorName = response.doctorName;
         }
 
-    })
+    });
 
     $scope.getPatientList = function () {
         var getPatientList = "/rest/v1/doctorinterface/getpatientlist?doctorId="+ $scope.doctorId;
@@ -105,7 +105,37 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
             }
 
         })
-    }
+    };
+
+    $scope.updateDeviceConfig = function(targetBgl, dailyMax, bolusMax, deviceMode){
+        var saveConfigDataUrl = "/rest/v1/admininterface/saveconfigdata";
+        var data = {
+            deviceId: $scope.deviceId,
+            patientId: $scope.patientId,
+            battery: parseFloat(100.00),
+            insulin: parseFloat(100.00),
+            glucagon: parseFloat(100.00),
+            deviceMode: deviceMode,
+            targetBgl: targetBgl,
+            bolusMax: bolusMax,
+            dailyMax: dailyMax
+        };
+
+        $http.post(saveConfigDataUrl, JSON.stringify(data)).success(function (result) {
+            if (result.status == "success"){
+            }else {
+                swal({
+                    title: "Sorry",
+                    type: "error",
+                    text: "Configuration data could not be Saved!!",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+            }
+        });
+
+    };
 
     $scope.linkClicked = function (linkName){
         console.log (linkName);
@@ -149,9 +179,11 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
             }).catch(swal.noop)
         }
         $scope.selectedLink = linkName;
-    }
+    };
     
     $scope.viewPatientRecord = function (patId, devId) {
+        $scope.patientId = patId;
+        $scope.deviceId = devId;
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: insulinpumpapp.assetsPath + 'ng/partials/patientRecord.html',
@@ -165,30 +197,11 @@ doctorinterfaceapp.controller('DoctorPanelCtrl',['$scope','$http', '$log','$time
                 }
             }
         });
-        modalInstance.result.then(function (formData) {
-            if (index>=0) {
-                $scope.formData.actions[index] = formData;
-            } else {
-                $scope.formData.actions.push(formData);
-            }
+        modalInstance.result.then(function (dataFromModal) {
+            $scope.updateDeviceConfig(dataFromModal.targetBgl, dataFromModal.dailyMax, dataFromModal.bolusMax, dataFromModal.deviceMode);
         }, function () {
             console.log("action Modal result promise rejected");
         });
-
-/*
-        $uibModal.open({
-            templateUrl: insulinpumpapp.assetsPath + "ng/partials/patientRecord.html",
-            controller: function ($scope, $uibModalInstance) {
-                $scope.ok = function () {
-                    $uibModalInstance.close();
-                };
-
-                $scope.cancel = function () {
-                    $uibModalInstance.dismiss('cancel');
-                };
-            }
-        })
-*/
     }
 
 }]);
@@ -198,13 +211,145 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
     $scope.patientId = patientData.patientId;
     $scope.patientName = "";
     $scope.deviceId = patientData.deviceId;
+    $scope.patient = {
+        patientFirstName: "",
+        patientLastName: "",
+        patientGender: "",
+        patientHeight: 0,
+        patientWeight: 0,
+        patientAge: 0,
+        emergencyContactEmail: "",
+        emergencyContactMobile: "",
+        targetBgl: "",
+        deviceMode: "",
+        bolusMax: "",
+        dailyMax: "",
+        hba1c: ""
+    };
+
+    $scope.savePatientData = function (targetBgl, dailyMax, bolusMax) {
+        console.log(targetBgl, dailyMax, bolusMax);
+        var dataFromModal = {
+            targetBgl: targetBgl,
+            dailyMax: dailyMax,
+            bolusMax: bolusMax,
+            deviceMode: $scope.patient.deviceMode
+        };
+        $scope.$close(dataFromModal);
+    };
+
+    /*Highchart Code*/
+
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    var bglChartOptions = {
+        chart: {
+            renderTo: 'bglchart',
+            type: 'spline',
+            borderColor: '#EBBA95',
+            borderWidth: 2,
+            borderRadius: 20,
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10,
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = Math.random();
+                        series.addPoint([x, y], true, true);
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+            text: 'Patient Sugar Level (Last 2 Weeks)'
+        },
+        subtitle: {
+            text: 'Source: Alpha-Beta Pump Simulator'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150
+        },
+        yAxis: {
+            title: {
+                text: 'Blood Glucose Level'
+            },
+            plotLines: [{
+                value: 50,
+                width: 6,
+                color: '#808080'
+            },
+                {
+                    value: 70,
+                    width: 4,
+                    color: 'red',
+                    dashStyle: 'largedash',
+                    label: {
+                        text: 'Minimum Safe Sugar Level',
+                        align:'center'
+                    }
+                },
+                {
+                    value: 200,
+                    width: 4,
+                    color: 'red',
+                    dashStyle: 'largedash',
+                    label: {
+                        text: 'Maximum Safe Sugar Level',
+                        align:'center'
+                    }
+                }
+            ]
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        series: [{
+            name: 'Blood Sugar Level',
+            data: (function () {
+                // generate an array of random data
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: Math.random()
+                    });
+                }
+                return data;
+            }())
+        }]
+    };
+
+    /*Highchart Code*/
+
 
     $scope.getPatientData = function() {
         if ($scope.deviceId != "" && $scope.patientId != "") {
             var getPatientDataUrl = "/rest/v1/admininterface/getpatientdata?patientId=" + $scope.patientId + "&deviceId=" + $scope.deviceId;
             $http.get(getPatientDataUrl).success(function (response) {
                 if (response.status == "success" && response.hasOwnProperty("data")) {
-                    $scope.patientFormData = {
+                    $scope.patient = {
                         patientFirstName: response.data.firstName,
                         patientLastName: response.data.lastName,
                         patientGender: response.data.gender,
@@ -212,8 +357,14 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
                         patientWeight: response.data.weight,
                         patientAge: response.data.age,
                         emergencyContactEmail: response.data.email,
-                        emergencyContactMobile: response.data.mobile
+                        emergencyContactMobile: response.data.mobile,
+                        targetBgl: response.data.targetBgl,
+                        deviceMode: response.data.deviceMode,
+                        bolusMax: response.data.bolusMax,
+                        dailyMax: response.data.dailyMax,
+                        hba1c: response.data.hba1c,
                     }
+                    var bglChart = new Highcharts.Chart(bglChartOptions);
                     $scope.patientName = response.data.firstName;
                 }
             })
@@ -221,6 +372,10 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
     }
 
     $scope.getPatientData();
+
+
+
+
 }]);
 
 doctorinterfaceapp.controller('DoctorRegistrationCtrl',['$scope','$http', '$log','$timeout','$cookieStore', '$location', '$route', function ($scope, $http, $log, $timeout, $cookieStore, $location, $route) {
