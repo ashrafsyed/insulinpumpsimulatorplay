@@ -44,6 +44,8 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
     $scope.simulationFormScreen = false;
     $scope.simulationCompleted = false;
     $scope.plotBglChart = [];
+    $scope.insulinStatus = 100;
+    $scope.glucagonStatus = 100;
 
     $scope.resetFormData = function () {
         $scope.simulatorFormData = {
@@ -113,17 +115,47 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
 
     /*Progress Bar Code for Insulin or Glucagon Reservoir*/
     $scope.reservoirProgressBar = function(reservoirType, value) {
+        var refillMessage = "";
+        var refillValue = 100;
+        var showWarningPopup = false;
+        var type = '';
         if (value < 20) {
-            reservoirType = 'danger';
+            type = 'danger';
+            showWarningPopup = true;
         } else if (value < 50) {
-            reservoirType = 'warning';
+            type = 'warning';
         } else if (value < 75) {
-            reservoirType = 'info';
+            type = 'info';
         } else {
-            reservoirType = 'success';
+            type = 'success';
         }
-        $scope.showWarning = reservoirType === 'danger' || reservoirType === 'warning';
-        $scope.reservoirType = reservoirType;
+        if (reservoirType === "insulinType"){
+            refillMessage = "Low Insulin Reservoir.";
+            $scope.showInsulinWarning = type === 'danger' || type === 'warning';
+            $scope.insulinStatus = value;
+            $scope.insulinType = type;
+        } else {
+            refillMessage = "Low Glucagon Reservoir.";
+            $scope.showGlucagonWarning = type === 'danger' || type === 'warning';
+            $scope.glucagonStatus = value;
+            $scope.glucagonType = type;
+        }
+
+        if(showWarningPopup){
+            swal({
+                title: refillMessage + ' Please refill ASAP!',
+                confirmButtonText: 'Refill Now',
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false
+            }).then((result)=>{
+                if (result.value){
+                    $scope.refill(reservoirType);
+                }
+             });
+
+            // swal(refillMessage, "Please refill ASAP","error");
+        }
+
     };
 
     /*HighCharts Code for BGL*/
@@ -378,6 +410,16 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                 });
             }
         })
+    }
+
+    $scope.discharge = function (progressbar) {
+        var value = 100 - 85;
+        $scope.reservoirProgressBar(progressbar, value);
+    }
+
+    $scope.refill = function (progressbar) {
+        var value = 100;
+        $scope.reservoirProgressBar(progressbar, value);
     }
 
 }]);
