@@ -43,7 +43,7 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
     $scope.powerOptionValue = false;
     $scope.simulationFormScreen = false;
     $scope.simulationCompleted = false;
-    $scope.plotBglChart = [];
+    $scope.manualBglList = [];
     $scope.insulinStatus = 100;
     $scope.glucagonStatus = 100;
 
@@ -159,9 +159,9 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
     };
 
     /*HighCharts Code for BGL*/
-    var bglChartOptions = {
+    var bglChartOptionsAutoMode = {
         chart: {
-            renderTo: 'bglchart',
+            renderTo: 'bglchartautomode',
             type: 'spline',
             borderColor: '#EBBA95',
             borderWidth: 2,
@@ -172,13 +172,99 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
             text: 'Patient Sugar Level'
         },
         subtitle: {
-            text: 'Source: Alpha-Beta Pump Simulator'
+            text: 'Source: Alpha-Beta Pump Simulator (AUTO MODE)'
         },
         xAxis: {
             type: 'datetime',
             dateTimeLabelFormats: {minute: '%H:%M'},
             title: {text: 'Time (24 Hours)'},
             tickInterval: 3600 * 1000
+        },
+        yAxis: {
+            title: {
+                text: 'Blood Glucose Level (mg/DL)'
+            },
+            min: 0,
+            tickAmount: 8,
+            tickInterval: 50,
+            lineWidth: 1,
+            minorGridLineWidth: 0,
+            minorTickInterval: 'auto',
+            minorTickWidth: 10,
+            plotLines: [{
+                value: 50,
+                width: 6,
+                color: '#808080'
+            },
+            {
+                value: 70,
+                width: 4,
+                color: 'red',
+                dashStyle: 'largedash',
+                label: {
+                    text: 'Minimum Safe Sugar Level',
+                    align:'center'
+                }
+            },
+            {
+                value: 200,
+                width: 4,
+                color: 'red',
+                dashStyle: 'largedash',
+                label: {
+                    text: 'Maximum Safe Sugar Level',
+                    align:'center'
+                }
+            }
+            ]
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
+            }
+        },
+        series: [{
+            name: 'Blood Sugar Level',
+            data: [],
+            pointStart: (new Date()).setHours(8,0),
+            pointInterval: 60 * 1000
+        }]
+    };
+
+    /*HighCharts Code for BGL*/
+    var bglChartOptionsManualMode = {
+        chart: {
+            renderTo: 'bglchartmanualmode',
+            type: 'spline',
+            borderColor: '#EBBA95',
+            borderWidth: 2,
+            borderRadius: 20,
+            marginRight: 20,
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = series.data[series.data.length() - 1] + Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+                        series.addPoint([y], true, true);
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+            text: 'Patient Sugar Level'
+        },
+        subtitle: {
+            text: 'Source: Alpha-Beta Pump Simulator (MANUAL MODE)'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {minute: '%H:%M'},
+            tickPixelInterval: 150
         },
         yAxis: {
             title: {
@@ -362,8 +448,13 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                     var batteryChart = new Highcharts.Chart(batteryGuageOptions);
 
                     //Populate BGL Highchart Data
-                    bglChartOptions.series[0].data = result.bglData;
-                    var bglChart = new Highcharts.Chart(bglChartOptions);
+                    if (data.deviceMode === "AUTO"){
+                        bglChartOptionsAutoMode.series[0].data = result.bglData;
+                        var bglChartAutoMode = new Highcharts.Chart(bglChartOptionsAutoMode);
+                    }else{
+                        bglChartOptionsManualMode.series[0].data = result.bglData;
+                        var bglChartManualMode = new Highcharts.Chart(bglChartOptionsManualMode);
+                    }
                 }
             })
 
@@ -420,6 +511,13 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
     $scope.refill = function (progressbar) {
         var value = 100;
         $scope.reservoirProgressBar(progressbar, value);
+    }
+
+    $scope.manualModeSimulation = function () {
+        //Populate BGL Highchart Data
+        bglChartOptionsManualMode.series[0].data = result.bglData;
+        var bglChartManualMode = new Highcharts.Chart(bglChartOptionsManualMode);
+
     }
 
 }]);

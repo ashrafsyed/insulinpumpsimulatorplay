@@ -297,7 +297,7 @@ doctorinterfaceapp.controller('PatientRecordCtrl',['$scope','$http', '$log','$ti
         },
         yAxis: {
             title: {
-                text: 'Blood Glucose Level (mg/DL)'
+                text: 'Blood Glucose Level (mg/dl)'
             },
             plotLines: [{
                 value: 50,

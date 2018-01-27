@@ -201,7 +201,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     swal({
                         title: "Saved",
                         type: "success",
-                        text: "Please send your device_id = " + result.deviceId + " and \n patient_id " + result.patientId + "to your doctor.",
+                        text: "Please send your device_id - " + result.deviceId + " and patient_id -" + result.patientId + " to your doctor.",
                         showConfirmButton: true
                     });
                     $scope.formSelected = {
@@ -246,7 +246,7 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     swal({
                         title: "Saved",
                         type: "success",
-                        text: "Please send your device_id = " + result.deviceId + " and \n patient_id " + result.patientId + "to your doctor.",
+                        text: "Please send your device_id : " + result.deviceId + " and \n patient_id : " + result.patientId + " to your doctor.",
                         showConfirmButton: true
                     });
 

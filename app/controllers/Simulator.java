@@ -21,6 +21,9 @@ import java.util.Map;
 
 public class Simulator extends Controller {
 
+    private static final Double MAX_SAFE = 200.00;
+    private static final Double MIN_SAFE = 70.00;
+
     public Result runSimulator() {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
@@ -61,9 +64,13 @@ public class Simulator extends Controller {
             String deviceId = (String) data.get("deviceId");
             String patientId = (String) data.get("patientId");
             Integer duration = ((Double) data.get("duration")).intValue();
-            bglMapList = startSimulation(startBgl, carbsArray, glycemicIndexArray, deviceId, patientId, Enums.deviceMode.MANUAL);
 
-            DeviceConfig config = DeviceConfig.byIds(deviceId,patientId);
+            Patient patient = Patient.byIds(deviceId, patientId);
+            DeviceConfig config = DeviceConfig.byIds(deviceId, patientId);
+
+            Double computedInsulin = InsulinModule.computeInsulinDose(manualModeCHO, manualModeGI, patient.glucoseSensitivity,
+                    startBgl, config.targetBgl);
+            bglMapList = bglIterator(startBgl, computedInsulin, manualModeCHO, manualModeGI, patient.patientWeight, patient.bloodVolume, patient.glucoseSensitivity);
 
             resMap.put("batteryStatus", config.batteryLevel);   //TODO reduce battery and insulin level after simulation execution
             resMap.put("insulinStatus", config.insulinLevel);
@@ -117,8 +124,12 @@ public class Simulator extends Controller {
             insulinChangeInBgl = 0.00; riseInBglCarb = 0.00;
             insulinChangeInBgl = InsulinModule.changeInBgl(i, insulin, weight, bloodVol);
             riseInBglCarb = CarbohydrateModule.riseInBGL(carbs, gI, i, glucoseSensitivity);
+            currentBgl = currentBgl - insulinChangeInBgl + riseInBglCarb - 0.05;
+            if (currentBgl < MAX_SAFE){
+                //TODO
+            }
+
             bglList.add(currentBgl);
-            currentBgl = currentBgl - insulinChangeInBgl + riseInBglCarb;
             System.out.println("BGL Breakfast:"+currentBgl+" at time: "+i+" insulinChange "+insulinChangeInBgl+" riseCarb " + riseInBglCarb);
         }
 

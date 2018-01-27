@@ -36,7 +36,7 @@
                             <div class="col-md-2">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="startingBgl" ng-model="simulatorFormData.startingBgl" placeholder="0.00" required>
-                                    <span class="input-group-addon">mg/DL</span>
+                                    <span class="input-group-addon">mg/dl</span>
                                 </div>
                             </div>
                             <div ng-if="showErrMsg" ng-messages="simulatorForm.startingBgl.$error" role="alert">
@@ -185,11 +185,22 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-1">
-                        <div id="bglchart">Placeholder for chart</div>
+                <div data-ng-if="simulatorFormData.deviceMode == 'AUTO'">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div id="bglchartautomode">Placeholder for chart</div>
+                        </div>
                     </div>
                 </div>
+
+                <div data-ng-if="simulatorFormData.deviceMode == 'MANUAL'">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div id="bglchartmanualmode">Placeholder for chart</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
