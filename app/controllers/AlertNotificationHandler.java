@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lib.BrowserPush;
+import models.PushNotificationType;
 import org.apache.commons.lang3.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -77,17 +78,50 @@ public class AlertNotificationHandler extends Controller {
         HashMap<String, Object> responseData = new HashMap<String, Object>();
 
         String registrationId = request().getQueryString("registrationId");
-        if (StringUtils.isNotEmpty(registrationId)){
-            //TODO fetch notification data from table
+        PushNotificationType notification = PushNotificationType.getFetchedTrue();
+        if (StringUtils.isNotEmpty(registrationId) && notification != null){
+
+            if (0 == notification.pushType.compareToIgnoreCase("needleCheck")){
+                responseData.put("body","Needle Assemble not attached!");
+            }else if (0 == notification.pushType.compareToIgnoreCase("insulinResCheck")){
+                responseData.put("body","Insulin Reservoir not attached!");
+            }else if (0 == notification.pushType.compareToIgnoreCase("glucagonResCheck")){
+                responseData.put("body","Glucagon Reservoir not attached!");
+
+            }else if (0 == notification.pushType.compareToIgnoreCase("batteryCheck")){
+                responseData.put("body","Please recharge the battery");
+
+            }else if (0 == notification.pushType.compareToIgnoreCase("pumpFailCheck")){
+                responseData.put("body","Pump is unable to inject Insulin. Kindly Check!");
+
+            }else {
+                responseData.put("body", "SOS!! The Patient needs assistance. Please check on him/her");
+            }
             responseData.put("title","Alpha-Beta Pump Simulator");
-            responseData.put("body","Danger!! The BGL level is too high. The patient may die");
             responseData.put("icon","assets/images/syringe.png");
             responseData.put("sound","assets/misc/Alert.mp3");
             responseData.put("image","assets/images/warning_sign.png");
-            responseData.put("url","https://youtube.com");
+            responseData.put("url","http://www.frankfurt-university.de/");
+
+            PushNotificationType.setFetchedFalse(notification.pushType);
         }
 
         return ok(gson.toJson(responseData)).as("application/json");
+    }
+
+    public Result selectPushType(){
+        Gson gson = new Gson();
+        Map<String, Object> resMap = new HashMap<>();
+
+        String notiftype = request().getQueryString("notiftype");
+
+        if (StringUtils.isNotEmpty(notiftype)){
+            PushNotificationType.setFetchedTrue(notiftype);
+            dispatchPushNotification();
+            resMap.put("status", "success");
+            return ok(gson.toJson(resMap)).as("application/json");
+        }
+        return ok(gson.toJson(resMap)).as("application/json");
     }
 
     public static void dispatchPushNotification(){

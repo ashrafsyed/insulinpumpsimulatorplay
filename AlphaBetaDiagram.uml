@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="1275.25" y="282.0">lib.InsulinModule</node>
+    <node x="3.5" y="245.0">controllers.AlertNotificationHandler</node>
+    <node x="0.0" y="55.5">lib.BrowserPush</node>
+    <node x="2924.25" y="300.5">models.DeviceConfig</node>
+    <node x="2262.25" y="686.5">controllers.PatientInterface</node>
+    <node x="934.25" y="356.0">lib.NexmoSMS</node>
+    <node x="3417.8125" y="950.0">controllers.Application</node>
+    <node x="27.321081081081076" y="771.3340540540541">lib.TextLocalSMS</node>
+    <node x="566.625" y="668.0">controllers.Simulator</node>
+    <node x="3666.229166666667" y="723.5">controllers.NurseInterface</node>
+    <node x="1340.5267857142858" y="0.0">lib.CarbohydrateModule</node>
+    <node x="475.25" y="356.0">lib.SimpleEmailSender</node>
+    <node x="3310.229166666667" y="631.0">controllers.AdminInterface</node>
+    <node x="1941.25" y="319.0">models.Patient</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="controllers.Simulator" target="lib.InsulinModule">
+      <point x="143.625" y="-97.5" />
+      <point x="1093.25" y="581.0" />
+      <point x="1436.75" y="581.0" />
+      <point x="-161.5" y="116.0" />
+    </edge>
+    <edge source="controllers.Simulator" target="controllers.AlertNotificationHandler">
+      <point x="-335.125" y="-97.5" />
+      <point x="614.5" y="611.0" />
+      <point x="195.0" y="611.0" />
+      <point x="0.0" y="153.0" />
+    </edge>
+    <edge source="controllers.AdminInterface" target="models.Patient">
+      <point x="-84.0" y="-134.5" />
+      <point x="3394.229166666667" y="591.0" />
+      <point x="2743.75" y="591.0" />
+      <point x="321.0" y="79.0" />
+    </edge>
+    <edge source="controllers.Application" target="controllers.NurseInterface">
+      <point x="102.33333333333348" y="-60.5" />
+      <point x="3673.645833333334" y="925.0" />
+      <point x="3766.729166666667" y="925.0" />
+      <point x="0.0" y="42.0" />
+    </edge>
+    <edge source="controllers.Simulator" target="models.DeviceConfig">
+      <point x="335.125" y="-97.5" />
+      <point x="1284.75" y="601.0" />
+      <point x="3074.5833333333335" y="601.0" />
+      <point x="-300.6666666666665" y="97.5" />
+    </edge>
+    <edge source="controllers.PatientInterface" target="lib.InsulinModule">
+      <point x="-107.0" y="-79.0" />
+      <point x="2315.75" y="581.0" />
+      <point x="1759.75" y="581.0" />
+      <point x="161.5" y="116.0" />
+    </edge>
+    <edge source="controllers.PatientInterface" target="models.Patient">
+      <point x="0.0" y="-79.0" />
+      <point x="0.0" y="79.0" />
+    </edge>
+    <edge source="controllers.Simulator" target="lib.SimpleEmailSender">
+      <point x="-143.625" y="-97.5" />
+      <point x="806.0" y="591.0" />
+      <point x="585.0" y="591.0" />
+      <point x="-109.75" y="42.0" />
+    </edge>
+    <edge source="controllers.Simulator" target="lib.NexmoSMS">
+      <point x="47.875" y="-97.5" />
+      <point x="997.5" y="571.0" />
+      <point x="1094.75" y="571.0" />
+      <point x="0.0" y="42.0" />
+    </edge>
+    <edge source="controllers.Simulator" target="lib.CarbohydrateModule">
+      <point x="-239.375" y="-97.5" />
+      <point x="710.25" y="601.0" />
+      <point x="464.75" y="601.0" />
+      <point x="464.75" y="220.0" />
+      <point x="1463.0267857142858" y="220.0" />
+      <point x="-122.5" y="97.5" />
+    </edge>
+    <edge source="controllers.Simulator" target="models.Patient">
+      <point x="239.375" y="-97.5" />
+      <point x="1189.0" y="591.0" />
+      <point x="2101.75" y="591.0" />
+      <point x="-321.0" y="79.0" />
+    </edge>
+    <edge source="controllers.AdminInterface" target="models.DeviceConfig">
+      <point x="84.0" y="-134.5" />
+      <point x="3562.229166666667" y="611.0" />
+      <point x="3675.916666666667" y="611.0" />
+      <point x="300.66666666666697" y="97.5" />
+    </edge>
+    <edge source="models.Patient" target="lib.CarbohydrateModule">
+      <point x="0.0" y="-79.0" />
+      <point x="2422.75" y="220.0" />
+      <point x="1708.0267857142858" y="220.0" />
+      <point x="122.5" y="97.5" />
+    </edge>
+    <edge source="controllers.Application" target="controllers.PatientInterface">
+      <point x="-102.33333333333348" y="-60.5" />
+      <point x="3468.979166666667" y="925.0" />
+      <point x="2422.75" y="925.0" />
+      <point x="0.0" y="79.0" />
+    </edge>
+    <edge source="controllers.Application" target="controllers.AdminInterface">
+      <point x="0.0" y="-60.5" />
+      <point x="3571.3125" y="925.0" />
+      <point x="3478.229166666667" y="925.0" />
+      <point x="0.0" y="134.5" />
+    </edge>
+    <edge source="controllers.PatientInterface" target="models.DeviceConfig">
+      <point x="107.0" y="-79.0" />
+      <point x="2529.75" y="611.0" />
+      <point x="3375.25" y="611.0" />
+      <point x="0.0" y="97.5" />
+    </edge>
+    <edge source="controllers.AlertNotificationHandler" target="lib.BrowserPush">
+      <point x="0.0" y="-153.0" />
+      <point x="0.0" y="42.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.4758230452674897" x="1934.0" y="600.0" />
+  <SelectedNodes>
+    <node>lib.TextLocalSMS</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

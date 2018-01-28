@@ -40,6 +40,7 @@ GET             /gcm_manifest.json                               controllers.Ale
 GET             /gcm_service_worker.js                           controllers.AlertNotificationHandler.gcmServiceWorker()
 OPTIONS         /rest/v1/push/register-subscription              controllers.AlertNotificationHandler.registerSubscriptionPreflight()
 POST            /rest/v1/push/register-subscription              controllers.AlertNotificationHandler.registerSubscription()
+GET             /rest/v1/push/set-notifpushtype                  controllers.AlertNotificationHandler.selectPushType()
 GET             /rest/v1/push/fetch-notification                 controllers.AlertNotificationHandler.fetchNotification()
 
 # Map static resources from the /public folder to the /assets URL path

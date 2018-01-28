@@ -74,6 +74,13 @@ create table patient_list (
   constraint pk_patient_list primary key (id)
 );
 
+create table push_notification_type (
+  id                            bigserial not null,
+  to_be_fetched                 boolean default false not null,
+  push_type                     varchar(255),
+  constraint pk_push_notification_type primary key (id)
+);
+
 create table sensor_data (
   id                            bigserial not null,
   device_id                     bigint,
@@ -95,6 +102,8 @@ drop table if exists doctor_profiles cascade;
 drop table if exists patient cascade;
 
 drop table if exists patient_list cascade;
+
+drop table if exists push_notification_type cascade;
 
 drop table if exists sensor_data cascade;
 

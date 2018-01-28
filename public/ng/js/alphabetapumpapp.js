@@ -575,13 +575,23 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
             }
         })
         return computedInsulin;
-    }
+    };
+
+    $scope.dispatchPushNotif = function(component){
+        var dispatchNotifUrl = '/rest/v1/push/set-notifpushtype?notiftype='+component;
+        $http.get(dispatchNotifUrl).success(function (response) {
+            if (response.status == "success"){
+                console.log("Push Notification sent for " + component);
+            }
+        })
+    };
 
     $scope.hardwareCheck = function (component) {
 
         var errorTitle = "";
         var notification = "";
         var buttonText = "";
+        $scope.dispatchPushNotif(component);
 
         switch (component) {
             case 'needleCheck':
