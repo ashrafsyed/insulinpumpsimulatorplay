@@ -35,16 +35,12 @@
                             <label class="col-md-4 control-label">Starting BGL</label>
                             <div class="col-md-2">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="startingBgl" ng-model="simulatorFormData.startingBgl" placeholder="0.00" min="40" max="400" required>
+                                    <input type="text" class="form-control" name="startingBgl" ng-model="simulatorFormData.startingBgl" placeholder="0.00" required>
                                     <span class="input-group-addon">mg/dl</span>
                                 </div>
                             </div>
                             <div ng-if="showErrMsg" ng-messages="simulatorForm.startingBgl.$error" role="alert">
                                 <div ng-message="required" class="error-block" style="color: #f45b5b">Please provide starting BGL.</div>
-<!--
-                                <div ng-message="min" class="error-block" style="color: #f45b5b">BGL too low. Please take glucagon or consult doctor.</div>
-                                <div ng-message="max" class="error-block" style="color: #f45b5b">BGL too low. Please take glucagon or consult doctor.</div>
--->
                             </div>
                         </div>
 

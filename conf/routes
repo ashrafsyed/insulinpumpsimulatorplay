@@ -12,6 +12,7 @@ GET             /interface/admin/                                controllers.Adm
 
 # Patient Interface
 GET             /rest/v1/admininterface/getDeviceConfig          controllers.PatientInterface.getDeviceConfig
+GET             /rest/v1/patient/computedInsulin                  controllers.PatientInterface.getComputedInsulin()
 
 # Doctor Interface
 POST            /rest/v1/doctorinterface/registerdoctor          controllers.DoctorInterface.registerDoctor

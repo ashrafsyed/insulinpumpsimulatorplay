@@ -440,7 +440,24 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                     deviceId: $scope.deviceId,
                     patientId: $scope.patientId,
                 };
-            }
+
+                var computedInsulin = $scope.computeInsulin(data.manualModeCHO, data.manualModeGI, data.startBgl);
+                if (computedInsulin < data.manualModeInsulinUnit){
+                    swal({
+                        title: 'High Insulin Alert!',
+                        text: "The insulin entered appears to be more than required. Are you sure you want to continue? Click No to use the system calculated value.",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Continue',
+                        confirmButtonText: 'No'
+                    }).then((result)=>{
+                        if(result.value){
+                            data.manualModeInsulinUnit = computedInsulin;
+                        }
+                    })
+                }
 
             $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
                 if (result.status == "success") {
@@ -464,10 +481,9 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                     }
                 }
             })
-
-            // $scope.simulationFormScreen = false;
             $scope.simulationCompleted = true;
-        }else {
+        }
+        } else {
             $scope.showErrMsg = true;
         }
 
@@ -527,6 +543,28 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
         $scope.reservoirProgressBar(progressbar, value);
     }
 
+    $scope.computeInsulin = function(manualModeCHO, manualModeGI, startBgl){
+        var getComputedInsulinUrl = '/rest/v1/patient/computedInsulin';
+        var computedInsulin = 0.0;
+        var data = {
+            deviceId: $scope.deviceId,
+            patientId: $scope.patientId,
+            startBgl: startBgl,
+            manualModeCHO: manualModeCHO,
+            manualModeGI: manualModeGI
+        };
+
+        var config = {
+            params: data,
+            headers : {'Accept' : 'application/json'}
+        };
+        $http.get(getComputedInsulinUrl, config).success(function (response) {
+            if (response.status == "success") {
+                computedInsulin = response.computedInsulin;
+            }
+        })
+        return computedInsulin;
+    }
 
 }]);
 
