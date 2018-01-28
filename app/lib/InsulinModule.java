@@ -52,7 +52,10 @@ public class InsulinModule {
         } else {
             correctionFactor=(-1*(targetBgl-startBgl));
         }
-        insulinDose = (bglRiseDueToCarb + correctionFactor)/25;
+        insulinDose = (bglRiseDueToCarb + correctionFactor)/20;
+        if (insulinDose < 0){
+            insulinDose = 0.00;
+        }
 
         return insulinDose; //TODO check if calculated is greater than recommended i.e. BolusMax;
     }

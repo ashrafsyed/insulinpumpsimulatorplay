@@ -248,10 +248,16 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                     // set up the updating of the chart each second
                     var series = this.series[0];
                     setInterval(function () {
-                        var x = (new Date()).getTime(), // current time
-                            y = series.data[series.data.length() - 1] + Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-                        series.addPoint([y], true, true);
-                    }, 1000);
+
+                        var y = [];
+                        var x = (new Date()).getTime(); // current time
+                            // y = series.data[series.data.length - 1] + Math.floor(Math.random() * (20 - 1 + 1)) + 1;
+                            y = $scope.bglChangeManualMode();
+                            y.forEach(function(element) {
+                                series.addPoint([element], true, false);
+                            })
+
+                    }, 2000);
                 }
             }
         },
@@ -263,8 +269,7 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
         },
         xAxis: {
             type: 'datetime',
-            dateTimeLabelFormats: {minute: '%H:%M'},
-            tickPixelInterval: 150
+            dateTimeLabelFormats: {minute: '%H:%M'}
         },
         yAxis: {
             title: {
@@ -452,8 +457,10 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                         bglChartOptionsAutoMode.series[0].data = result.bglData;
                         var bglChartAutoMode = new Highcharts.Chart(bglChartOptionsAutoMode);
                     }else{
-                        bglChartOptionsManualMode.series[0].data = result.bglData;
+                        bglChartOptionsManualMode.series[0].data = result.bglData.splice(0,50);
                         var bglChartManualMode = new Highcharts.Chart(bglChartOptionsManualMode);
+                        $scope.manualBglList = result.bglData;
+
                     }
                 }
             })
@@ -464,6 +471,13 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
             $scope.showErrMsg = true;
         }
 
+    }
+
+    $scope.bglChangeManualMode = function() {
+        var y = [];
+        var series = bglChartOptionsManualMode.series[0];
+        y = $scope.manualBglList.splice(0,10);
+        return y;
     }
 
     $scope.onChangeDeviceMode = function(form) {
@@ -513,12 +527,6 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
         $scope.reservoirProgressBar(progressbar, value);
     }
 
-    $scope.manualModeSimulation = function () {
-        //Populate BGL Highchart Data
-        bglChartOptionsManualMode.series[0].data = result.bglData;
-        var bglChartManualMode = new Highcharts.Chart(bglChartOptionsManualMode);
-
-    }
 
 }]);
 

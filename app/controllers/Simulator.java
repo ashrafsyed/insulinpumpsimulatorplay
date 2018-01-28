@@ -28,8 +28,8 @@ public class Simulator extends Controller {
         Gson gson = new Gson();
         Map<String, Object> resMap = new HashMap<>();
         List<Double> bglMapList = new ArrayList<>();
-        Double[] carbsArray = new Double[3];
-        Double[] glycemicIndexArray = new Double[3];
+        Double[] carbsArray = new Double[4];
+        Double[] glycemicIndexArray = new Double[4];
         Map<String, Object> data = gson.fromJson(request().body().asJson().toString(), new TypeToken<Map<String, Object>>() {
         }.getType());
 
@@ -39,9 +39,11 @@ public class Simulator extends Controller {
             carbsArray[0] = (Double) data.get("cho1");
             carbsArray[1] = (Double) data.get("cho2");
             carbsArray[2] = (Double) data.get("cho3");
+            carbsArray[3] = (Double) data.get("cho3");
             glycemicIndexArray[0] = (Double) data.get("breakfastGI");
             glycemicIndexArray[1] = (Double) data.get("lunchGI");
             glycemicIndexArray[2] = (Double) data.get("dinnerGI");
+            glycemicIndexArray[3] = (Double) data.get("dinnerGI");
             String exercise = (String) data.get("exercise");
             String deviceId = (String) data.get("deviceId");
             String patientId = (String) data.get("patientId");
@@ -93,6 +95,10 @@ public class Simulator extends Controller {
         if (deviceMode.value=="AUTO"){
             Double startBglForIteration = startBgl;
             for (int i= 0; i<carbsArray.length; i++) {
+                if (i == 3){
+                    carbsArray[i] = carbsArray[i]/2.0;
+                    glycemicIndex[i] = glycemicIndex[i]/2.0;
+                }
                 List<Double> bglIterationValue = new ArrayList<>();
                 computedInsulin = InsulinModule.computeInsulinDose(carbsArray[i], glycemicIndex[i], patient.glucoseSensitivity,
                         startBglForIteration, config.targetBgl);
@@ -124,9 +130,12 @@ public class Simulator extends Controller {
             insulinChangeInBgl = 0.00; riseInBglCarb = 0.00;
             insulinChangeInBgl = InsulinModule.changeInBgl(i, insulin, weight, bloodVol);
             riseInBglCarb = CarbohydrateModule.riseInBGL(carbs, gI, i, glucoseSensitivity);
-            currentBgl = currentBgl - insulinChangeInBgl + riseInBglCarb - 0.05;
-            if (currentBgl < MAX_SAFE){
-                //TODO
+            if (currentBgl < MIN_SAFE){
+                currentBgl = currentBgl - insulinChangeInBgl + riseInBglCarb;
+            } else if (currentBgl > MAX_SAFE){
+                currentBgl = currentBgl - insulinChangeInBgl + riseInBglCarb - 0.20;
+            }else {
+                currentBgl = currentBgl - insulinChangeInBgl + riseInBglCarb - 0.07;
             }
 
             bglList.add(currentBgl);
