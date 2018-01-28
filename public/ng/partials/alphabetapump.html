@@ -183,6 +183,39 @@
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-danger btn-circle btn-xl" ng-click="SOS()"><span class="fa fa-ambulance" aria-hidden="true"></span> SOS (Call Emergency)</button>
                     </div>
+
+                    <div class="col-md-3 col-md-offset-1 table-bordered" style="color:#6a6a86">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" ng-model="hardwareAssembly.needleCheck" ng-click="hardwareCheck('needleCheck')" id="needleCheck">
+                            <label class="form-check-label" for="needleCheck">
+                                Remove Needle Assembly
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" ng-model="hardwareAssembly.insulinResCheck" ng-click="hardwareCheck('insulinResCheck')" id="insulinResCheck">
+                            <label class="form-check-label" for="insulinResCheck">
+                                Remove Insulin Reservoir
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"  ng-model="hardwareAssembly.glucagonResCheck" ng-click="hardwareCheck('glucagonResCheck')" id="glucagonResCheck">
+                            <label class="form-check-label" for="glucagonResCheck">
+                                Remove Glucagon Reservoir
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" ng-model="hardwareAssembly.batteryCheck" ng-click="hardwareCheck('batteryCheck')" id="batteryCheck">
+                            <label class="form-check-label" for="batteryCheck">
+                                Discharge Battery
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" ng-model="hardwareAssembly.pumpFailCheck" ng-click="hardwareCheck('pumpFailCheck')" id="pumpFailCheck">
+                            <label class="form-check-label" for="pumpFailCheck">
+                                Insulin Pump Failure
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div data-ng-if="simulatorFormData.deviceMode == 'AUTO'">

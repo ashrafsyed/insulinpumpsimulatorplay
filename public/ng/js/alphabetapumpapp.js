@@ -46,6 +46,13 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
     $scope.manualBglList = [];
     $scope.insulinStatus = 100;
     $scope.glucagonStatus = 100;
+    $scope.hardwareAssembly = {
+        needleCheck: false,
+        insulinResCheck: false,
+        glucagonResCheck: false,
+        batteryCheck: false,
+        pumpFailCheck: false
+    }
 
     $scope.resetFormData = function () {
         $scope.simulatorFormData = {
@@ -565,51 +572,56 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
         return computedInsulin;
     }
 
-}]);
+    $scope.hardwareCheck = function (component) {
 
-alphabetapumpapp.controller('SignupCtrl',['$scope','$http', '$log', function ($scope, $http, $log) {
-        $scope.signup = function() {
-            var payload = {
-                email : $scope.email,
-                password : $scope.password
-            };
+        var errorTitle = "";
+        var notification = "";
+        var buttonText = "";
 
-            $http.post('app/signup', payload)
-                .success(function(data) {
-                    $log.debug(data);
-                });
-        };
-    }]);
-
-alphabetapumpapp.controller('DashboardCtrl',['$scope','$http', '$log','$timeout','$cookieStore', function ($scope, $http, $log, $timeout, $cookieStore) {
-    /**
-     * Sidebar Toggle & Cookie Control
-     */
-    var mobileView = 992;
-
-    $scope.getWidth = function() {
-        return window.innerWidth;
-    };
-
-    $scope.$watch($scope.getWidth, function(newValue, oldValue) {
-        if (newValue >= mobileView) {
-            if (angular.isDefined($cookieStore.get('toggle'))) {
-                $scope.toggle = ! $cookieStore.get('toggle') ? false : true;
-            } else {
-                $scope.toggle = true;
-            }
-        } else {
-            $scope.toggle = false;
+        switch (component) {
+            case 'needleCheck':
+                errorTitle = "Hardware Component Missing!";
+                notification = "Needle Assemble not attached!";
+                buttonText = "Attach Needle";
+                $scope.hardwareAssembly.needleCheck = false;
+                break;
+            case 'insulinResCheck':
+                errorTitle = "Hardware Component Missing!";
+                notification = "Insulin Reservoir not attached!";
+                buttonText = "Attach Reservoir";
+                $scope.hardwareAssembly.insulinResCheck = false;
+                break;
+            case 'glucagonResCheck':
+                errorTitle = "Hardware Component Missing!";
+                notification = "Glucagon Reservoir not attached!";
+                buttonText = "Attach Reservoir";
+                $scope.hardwareAssembly.glucagonResCheck = false;
+                break;
+            case 'batteryCheck':
+                errorTitle = "Low Battery";
+                notification = "Please recharge the battery";
+                buttonText = "Recharge";
+                $scope.hardwareAssembly.batteryCheck = false;
+                break;
+            case 'pumpFailCheck':
+                errorTitle = "Alpha Beta Pump Failure";
+                notification = "Pump is unable to inject Insulin. Kindly Check!";
+                buttonText = "Device Fixed";
+                $scope.hardwareAssembly.pumpFailCheck = false;
+                break;
         }
+        swal({
+            title: errorTitle,
+            text: notification,
+            type: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: buttonText
+        }).then((result)=>{
+            if(result.value){
+                console.log("Hardware Problem Fixed!!");
+        }
+    })
 
-    });
-
-    $scope.toggleSidebar = function() {
-        $scope.toggle = !$scope.toggle;
-        $cookieStore.put('toggle', $scope.toggle);
-    };
-
-    window.onresize = function() {
-        $scope.$apply();
-    };
+    }
 }]);
