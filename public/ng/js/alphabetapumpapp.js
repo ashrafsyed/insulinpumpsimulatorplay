@@ -410,10 +410,10 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
 
     $scope.runSimulator = function(form) {
         $scope.showErrMsg = false;
-        if (form.$valid){
+        if (form.$valid) {
             var simulatorUrl = "/rest/v1/simulator/runsimulation";
             var data = {};
-            if ($scope.simulatorFormData.deviceMode === "AUTO"){
+            if ($scope.simulatorFormData.deviceMode === "AUTO") {
                 data = {
                     deviceMode: $scope.simulatorFormData.deviceMode,
                     startBgl: parseFloat($scope.simulatorFormData.startingBgl),
@@ -442,7 +442,7 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                 };
 
                 var computedInsulin = $scope.computeInsulin(data.manualModeCHO, data.manualModeGI, data.startBgl);
-                if (computedInsulin < data.manualModeInsulinUnit){
+                if (computedInsulin < data.manualModeInsulinUnit) {
                     swal({
                         title: 'High Insulin Alert!',
                         text: "The insulin entered appears to be more than required. Are you sure you want to continue? Click No to use the system calculated value.",
@@ -454,10 +454,11 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                         confirmButtonText: 'No'
                     }).then((result)=>{
                         if(result.value){
-                            data.manualModeInsulinUnit = computedInsulin;
-                        }
-                    })
+                        data.manualModeInsulinUnit = computedInsulin;
+                    }
+                })
                 }
+            }
 
             $http.post(simulatorUrl, JSON.stringify(data)).success(function (result) {
                 if (result.status == "success") {
@@ -470,11 +471,11 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                     var batteryChart = new Highcharts.Chart(batteryGuageOptions);
 
                     //Populate BGL Highchart Data
-                    if (data.deviceMode === "AUTO"){
+                    if (data.deviceMode === "AUTO") {
                         bglChartOptionsAutoMode.series[0].data = result.bglData;
                         var bglChartAutoMode = new Highcharts.Chart(bglChartOptionsAutoMode);
-                    }else{
-                        bglChartOptionsManualMode.series[0].data = result.bglData.splice(0,50);
+                    } else {
+                        bglChartOptionsManualMode.series[0].data = result.bglData.splice(0, 50);
                         var bglChartManualMode = new Highcharts.Chart(bglChartOptionsManualMode);
                         $scope.manualBglList = result.bglData;
 
@@ -482,11 +483,9 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                 }
             })
             $scope.simulationCompleted = true;
-        }
         } else {
             $scope.showErrMsg = true;
         }
-
     }
 
     $scope.bglChangeManualMode = function() {
