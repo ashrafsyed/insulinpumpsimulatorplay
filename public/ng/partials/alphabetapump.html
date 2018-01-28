@@ -173,11 +173,11 @@
                     <div class="col-md-3 col-md-offset-0">
                         <label class="text-center">Insulin</label>
                         <a class="col-md-offset-5" href="" ng-click="discharge('insulinType')">discharge</a>
-                        <uib-progressbar class="progress-striped active" value="insulinStatus" type="{{insulinType}}">{{insulinType}} <i ng-show="showInsulinWarning"></i></uib-progressbar>
+                        <uib-progressbar class="progress-striped active" value="insulinStatus" type="{{insulinType}}">{{insulinStatusText}} <i ng-show="showInsulinWarning"></i></uib-progressbar>
 
                         <label class="text-center">Glucagon</label>
                         <a class="col-md-offset-5" href="" ng-click="discharge('glucagonType')">discharge</a>
-                        <uib-progressbar class="progress-striped active" value="glucagonStatus" type="{{glucagonType}}">{{glucagonType}} <i ng-show="showGlucagonWarning"></i></uib-progressbar>
+                        <uib-progressbar class="progress-striped active" value="glucagonStatus" type="{{glucagonType}}">{{glucagonStatusText}} <i ng-show="showGlucagonWarning"></i></uib-progressbar>
 
                     </div>
                     <div class="col-md-2">

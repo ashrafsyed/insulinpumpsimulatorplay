@@ -123,28 +123,33 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
     /*Progress Bar Code for Insulin or Glucagon Reservoir*/
     $scope.reservoirProgressBar = function(reservoirType, value) {
         var refillMessage = "";
-        var refillValue = 100;
         var showWarningPopup = false;
         var type = '';
+         var statusText = '';
         if (value < 20) {
             type = 'danger';
+             var statusText = 'LOW'
             showWarningPopup = true;
         } else if (value < 50) {
+             var statusText = 'LOW'
             type = 'warning';
         } else if (value < 75) {
             type = 'info';
         } else {
+             var statusText = 'FULL'
             type = 'success';
         }
         if (reservoirType === "insulinType"){
             refillMessage = "Low Insulin Reservoir.";
             $scope.showInsulinWarning = type === 'danger' || type === 'warning';
             $scope.insulinStatus = value;
+            $scope.insulinStatusText = statusText;
             $scope.insulinType = type;
         } else {
             refillMessage = "Low Glucagon Reservoir.";
             $scope.showGlucagonWarning = type === 'danger' || type === 'warning';
             $scope.glucagonStatus = value;
+            $scope.glucagonStatusText = statusText;
             $scope.glucagonType = type;
         }
 
@@ -601,6 +606,9 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
                 errorTitle = "Low Battery";
                 notification = "Please recharge the battery";
                 buttonText = "Recharge";
+                batteryGuageOptions.series[0].data = [0];
+                var batteryChart = new Highcharts.Chart(batteryGuageOptions);
+
                 $scope.hardwareAssembly.batteryCheck = false;
                 break;
             case 'pumpFailCheck':
@@ -619,7 +627,9 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
             confirmButtonText: buttonText
         }).then((result)=>{
             if(result.value){
-                console.log("Hardware Problem Fixed!!");
+            batteryGuageOptions.series[0].data = [100];
+            var batteryChart = new Highcharts.Chart(batteryGuageOptions);
+            console.log("Hardware Problem Fixed!!");
         }
     })
 
