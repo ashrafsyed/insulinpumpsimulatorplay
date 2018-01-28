@@ -636,7 +636,7 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
             confirmButtonColor: '#3085d6',
             confirmButtonText: buttonText
         }).then((result)=>{
-            if(result.value){
+            if(result.value && component == "batteryCheck"){
             batteryGuageOptions.series[0].data = [100];
             var batteryChart = new Highcharts.Chart(batteryGuageOptions);
             console.log("Hardware Problem Fixed!!");

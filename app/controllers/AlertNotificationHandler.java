@@ -96,11 +96,11 @@ public class AlertNotificationHandler extends Controller {
 
             }else {
                 responseData.put("body", "SOS!! The Patient needs assistance. Please check on him/her");
+                responseData.put("image","assets/images/warning_sign.png");
             }
             responseData.put("title","Alpha-Beta Pump Simulator");
             responseData.put("icon","assets/images/syringe.png");
             responseData.put("sound","assets/misc/Alert.mp3");
-            responseData.put("image","assets/images/warning_sign.png");
             responseData.put("url","http://www.frankfurt-university.de/");
 
             PushNotificationType.setFetchedFalse(notification.pushType);
