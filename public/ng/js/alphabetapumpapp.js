@@ -596,7 +596,7 @@ alphabetapumpapp.controller('AlphaBetaPumpCtrl',['$scope','$http', '$log', '$loc
         switch (component) {
             case 'needleCheck':
                 errorTitle = "Hardware Component Missing!";
-                notification = "Needle Assemble not attached!";
+                notification = "Needle Assembly not attached!";
                 buttonText = "Attach Needle";
                 $scope.hardwareAssembly.needleCheck = false;
                 break;

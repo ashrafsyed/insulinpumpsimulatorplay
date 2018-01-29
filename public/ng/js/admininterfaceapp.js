@@ -20,22 +20,6 @@ var admininterfaceapp = angular.module('admininterfaceapp', [
     'ui.bootstrap'
 ]);
 
-admininterfaceapp.directive('dateAsMs', function() {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function(scope,elem,attrs,ngModelCtrl) {
-            ngModelCtrl.$parsers.push(function(value){
-                if (value && value.getTime) {
-                    return value.getTime();
-                } else {
-                    return value;
-                }
-            });
-        }
-    };
-});
-
 admininterfaceapp.config(['$routeProvider', function ($routeProvider) {
       $routeProvider
           .when('/', {
@@ -74,10 +58,10 @@ admininterfaceapp.controller('AdminInterfaceCtrl',['$scope','$http', '$log', '$l
                     'autocapitalize': 'off',
                     'autocorrect': 'off'
                 },
-                preConfirm: (password) => {
-                    return new Promise((resolve) => {
-                        setTimeout(() => {
-                            if (password === '') {
+                preConfirm: (password)=>{
+                    return new Promise((resolve)=>{
+                        setTimeout(()=>{
+                            if (password === ''){
                                 swal.showValidationError('Incorrect PIN!!');
                             }
                             resolve()

@@ -40,4 +40,17 @@ public class PushNotificationType extends Model {
         pushNotificationType.save();
     }
 
+/*
+INSERT INTO push_notification_type
+    VALUES (1,FALSE ,'needleCheck');
+INSERT INTO push_notification_type
+    VALUES (2,FALSE ,'insulinResCheck');
+INSERT INTO push_notification_type
+    VALUES (3,FALSE ,'glucagonResCheck');
+INSERT INTO push_notification_type
+    VALUES (4,FALSE ,'batteryCheck');
+INSERT INTO push_notification_type
+    VALUES (6,FALSE ,'pumpFailCheck');
+ */
+
 }

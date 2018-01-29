@@ -82,7 +82,7 @@ public class AlertNotificationHandler extends Controller {
         if (StringUtils.isNotEmpty(registrationId) && notification != null){
 
             if (0 == notification.pushType.compareToIgnoreCase("needleCheck")){
-                responseData.put("body","Needle Assemble not attached!");
+                responseData.put("body","Needle Assembly not attached!");
             }else if (0 == notification.pushType.compareToIgnoreCase("insulinResCheck")){
                 responseData.put("body","Insulin Reservoir not attached!");
             }else if (0 == notification.pushType.compareToIgnoreCase("glucagonResCheck")){
