@@ -79,21 +79,24 @@ public class AlertNotificationHandler extends Controller {
 
         String registrationId = request().getQueryString("registrationId");
         PushNotificationType notification = PushNotificationType.getFetchedTrue();
-        if (StringUtils.isNotEmpty(registrationId) && notification != null){
+        if (StringUtils.isNotEmpty(registrationId)){
 
-            if (0 == notification.pushType.compareToIgnoreCase("needleCheck")){
-                responseData.put("body","Needle Assembly not attached!");
-            }else if (0 == notification.pushType.compareToIgnoreCase("insulinResCheck")){
-                responseData.put("body","Insulin Reservoir not attached!");
-            }else if (0 == notification.pushType.compareToIgnoreCase("glucagonResCheck")){
-                responseData.put("body","Glucagon Reservoir not attached!");
+            if (notification != null){
+                if (0 == notification.pushType.compareToIgnoreCase("needleCheck")){
+                    responseData.put("body","Needle Assembly not attached!");
+                }else if (0 == notification.pushType.compareToIgnoreCase("insulinResCheck")){
+                    responseData.put("body","Insulin Reservoir not attached!");
+                }else if (0 == notification.pushType.compareToIgnoreCase("glucagonResCheck")){
+                    responseData.put("body","Glucagon Reservoir not attached!");
 
-            }else if (0 == notification.pushType.compareToIgnoreCase("batteryCheck")){
-                responseData.put("body","Please recharge the battery");
+                }else if (0 == notification.pushType.compareToIgnoreCase("batteryCheck")){
+                    responseData.put("body","Please recharge the battery");
 
-            }else if (0 == notification.pushType.compareToIgnoreCase("pumpFailCheck")){
-                responseData.put("body","Pump is unable to inject Insulin. Kindly Check!");
+                }else if (0 == notification.pushType.compareToIgnoreCase("pumpFailCheck")){
+                    responseData.put("body","Pump is unable to inject Insulin. Kindly Check!");
 
+                }
+                PushNotificationType.setFetchedFalse(notification.pushType);
             }else {
                 responseData.put("body", "SOS!! The Patient needs assistance. Please check on him/her");
                 responseData.put("image","assets/images/warning_sign.png");
@@ -103,7 +106,6 @@ public class AlertNotificationHandler extends Controller {
             responseData.put("sound","assets/misc/Alert.mp3");
             responseData.put("url","http://www.frankfurt-university.de/");
 
-            PushNotificationType.setFetchedFalse(notification.pushType);
         }
 
         return ok(gson.toJson(responseData)).as("application/json");
